@@ -1,0 +1,59 @@
+# To Do:
+###### [*] - means optional
+###### "-" - means not done yet
+###### "+" - means it's done
+
+### Project Setup - **In Progress**
+
+- RESTful API
+
+### API Implementation - **In Progress**
+##### Shows
+- Create show ( POST /shows )
+- Update show ( PUT /shows/{wid} )
+- View show ( GET /shows/{wid} )
+- View all shows ( GET /shows )
+- [*] Delete show ( DELETE /shows/{wid} )
+- View show specific section ( GET /shows/{wid}/sections/{sid} )
+- Subscribe to receive donated tickets ( POST /shows/{wid}/donations )
+- View status of request for donated tickets ( GET /shows/{wid}/donations/{did} )
+
+##### Seating
+- [*] Create section ( POST /seating )
+- [*] Update section ( PUT /seating/{sid} )
+- [*] Delete section ( DELETE /seating/{sid} )
+- Request seats auto ( GET /seating?show={wid}&section={sid}&count=[0-9]+ )
+- [*] Request specific seats ( GET /seating?show={wid}&section={sid}&seats=[{cid}, {cid}, ...] )
+- View all sections ( GET /seating )
+- View specific section ( GET /seating/{sid} )
+
+##### Orders
+- Create order ( POST /orders )
+- View all orders ( GET /orders )
+- View orders by_date ( GET /orders?start_date=YYYYMMDD&end_date=YYYYMMDD )
+- View order ( GET /orders/{oid} )
+- [*] Update order ( PUT /orders/{oid} )
+- [*] Delete order ( DELETE /orders/{oid} )
+
+##### Tickets
+- View ticket ( GET /tickets/{tid} )
+- Scan ticket ( POST /tickets )
+- [*] View all tickets ( GET /tickets )
+- [*] Delete ticket ( DELETE /tickets/{tid} )
+- Donate ticket ( POST /tickets/donations )
+
+##### Reports
+- Get list of available reports ( GET /reports )
+- Get report ( GET /reports/{mrid}[ ?show={wid} | ?start_date=YYYYMMDD&end_date=YYYYMMDD ] )
+
+###### Search
+- Search ( GET /search?topic=topicword&key=keyword )
+
+###### Abbreviations:
+###### * wid: show id
+###### * sid: section id
+###### * cid: seat (chair) id
+###### * did: id of request for donated tickets
+###### * oid: order id
+###### * tid: ticket id
+###### * mrid: manager report id 
