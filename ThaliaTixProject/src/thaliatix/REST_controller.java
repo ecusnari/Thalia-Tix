@@ -21,22 +21,18 @@ import com.google.gson.JsonObject;
 
 @Path("/thalia")
 public class REST_controller {
-	private BoundaryInterfaceShow is = new ShowManager();
-	private BoundaryInterfaceSeating iseat = new SeatingManager();
+	private BoundaryInterfaceShow showManager = new ShowManager();
+	private BoundaryInterfaceSeating seatingManager = new SeatingManager();
 	private BoundaryInterfaceOrder orderManager = new OrderManager();
 	private BoundaryInterfaceTicket ticketManager = new TicketManager();
 	private BoundaryInterfaceDonation donationManager = new DonationManager();
-	Section initSection;
-	Seating initSeating;
-	Seat initSeat;
-
 	
 	@PostConstruct
     public void postConstruct() {
         //Initialize theater seating
     	
-		if(iseat.getAllSeats().size()==0) {
-			iseat.ConfigureGeneralSeatsLayout();
+		if(seatingManager.getAllSeats().size()==0) {
+			seatingManager.ConfigureGeneralSeatsLayout();
 		}
 		
 	}
@@ -71,8 +67,8 @@ public class REST_controller {
 	        	return Response.status(Response.Status.BAD_REQUEST).entity("Data from show_info is missing.").build();
 	        }
 	        
-	        Show ns = is.createShow(s.getName(), s.getWeb(), s.getDate(), s.getTime());
-	        System.out.println("Seating manager set=up for new show(POST)");
+	        Show ns = showManager.createShow(s.getName(), s.getWeb(), s.getDate(), s.getTime());
+	        
 	        BoundaryInterfaceSeating newSeatingLayout = new SeatingManager();
 	        newSeatingLayout.ConfigureGeneralSeatsLayout();
 	        
@@ -108,7 +104,7 @@ public class REST_controller {
     public Response updateShow(@PathParam("id") String showID, String json) {
     	
         
-    	SpecificShowDetail sIn = is.getShowDetail(showID);
+    	SpecificShowDetail sIn = showManager.getShowDetail(showID);
         
         if (sIn.isNil()) {
             // return a 404
@@ -162,7 +158,7 @@ public class REST_controller {
 			      
 		        s.setWid(showID);
 		        
-        		is.updateShow(showID, s);
+        		showManager.updateShow(showID, s);
         		Gson gsonb = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
     		    String st = gsonb.toJson(s);
         		return Response.status(Response.Status.ACCEPTED).build();
@@ -182,7 +178,7 @@ public class REST_controller {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSpecificShow(@PathParam("id") String lid) {
         // call the "Get Show Detail" use case
-        SpecificShowDetail s = is.getShowDetail(lid);
+        SpecificShowDetail s = showManager.getShowDetail(lid);
         if (s.isNil()) {
             // return a 404
             return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for ID: " + lid).build();
@@ -200,7 +196,7 @@ public class REST_controller {
     public Response getAllShows() {
         // calls the "Get All Shows" use case
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String s = gson.toJson(is.getAllShows());
+        String s = gson.toJson(showManager.getAllShows());
         return Response.status(Response.Status.OK).entity(s).build();
     }
 
@@ -212,7 +208,7 @@ public class REST_controller {
     	
     	//calls the "Get Show Sections" use case
     	Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    	String s = gson.toJson(is.getShowSections(wid));
+    	String s = gson.toJson(showManager.getShowSections(wid));
     	System.out.println(s);
     	return Response.status(Response.Status.OK).entity(s).build();
     	
@@ -224,7 +220,7 @@ public class REST_controller {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getExactSectionForShowID(@PathParam("id") String showID, @PathParam("sid") String secID) {
 		
-    	ShowSectionDetailedInfo s = is.getShowSectionDetail(showID, secID);
+    	ShowSectionDetailedInfo s = showManager.getShowSectionDetail(showID, secID);
         if (s == null) {
             // return a 404
             return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for ID: " + showID).build();
@@ -253,11 +249,11 @@ public class REST_controller {
     	System.out.println("wid: " + showID + ", sid:" + sectionID + ", count:" + count + " start id: " + start_cid);
     	if(showID==null || sectionID == null || count == 0) {
     		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
-            String s = gson.toJson(iseat.getAllSeats());
+            String s = gson.toJson(seatingManager.getAllSeats());
             return Response.status(Response.Status.OK).entity(s).build();
     	}
     	else if(showID != null && sectionID != null && count != 0) {
-    		SeatRequest jsonSeatsRequested =  is.GetRequestedSeats(showID, sectionID, count, start_cid);
+    		SeatRequest jsonSeatsRequested =  showManager.GetRequestedSeats(showID, sectionID, count, start_cid);
     		if(jsonSeatsRequested == null) {
     			return Response.status(Response.Status.BAD_REQUEST).entity("The start id does not exist in the chosen section").build();
     		}
@@ -275,7 +271,7 @@ public class REST_controller {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSpecificSection(@PathParam("id") String lid) {
         // call the "Get Show Detail" use case
-        SectionDetail s = iseat.getSectionDetail(lid);
+        SectionDetail s = seatingManager.getSectionDetail(lid);
         if (s.isNil()) {
             // return a 404
             return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for ID: " + lid).build();
@@ -335,12 +331,12 @@ public class REST_controller {
 			}
 			
 			//Check Requested Seats Availability
-			boolean seatsAvailable = is.CheckSeatsAvailability(widString, sidString, seats);
+			boolean seatsAvailable = showManager.CheckSeatsAvailability(widString, sidString, seats);
 			if(!seatsAvailable) {return Response.status(Response.Status.BAD_REQUEST).entity("Seats requested are unavailable").build();}
 				        
 			Order newOrder = new Order();
 			PatronInfo newPatron = gson.fromJson(patronInfoString, PatronInfo.class);
-			ShowInfo showInfo = new ShowInfo(is.findById(widString));
+			ShowInfo showInfo = new ShowInfo(showManager.findById(widString));
 			newOrder.setWid(Integer.toString((Integer.parseInt(widString))));
 			System.out.println(newOrder.getWid());
 			newOrder.setShow_info(showInfo);
@@ -349,13 +345,13 @@ public class REST_controller {
 			newOrder.setPatron_info(newPatron);
 			
 			//Update Status of seats to "sold"
-			is.SetTicketStatusToSold(widString, sidString, seats);
+			showManager.SetTicketStatusToSold(widString, sidString, seats);
 			
 			//Create Tickets and add to Ticket Manager
-			int price = is.GetSectionPriceForShow(widString, sidString);
+			int price = showManager.GetSectionPriceForShow(widString, sidString);
 			
 			for(Seat availableSeat:seats) {
-				Section getSectionInfoForTicket = is.getSectionInfoForSeat(widString, sidString, availableSeat.getCid());
+				Section getSectionInfoForTicket = showManager.getSectionInfoForSeat(widString, sidString, availableSeat.getCid());
 								
 				Ticket newTicket = new Ticket(widString, showInfo, newPatron, getSectionInfoForTicket);
 				Ticket ticketCompleted = ticketManager.createTicket(newTicket);

@@ -81,7 +81,7 @@ public class ShowManager implements BoundaryInterfaceShow{
 	}
 	
 	public SeatRequest GetRequestedSeats(String wid, String sid, int count, String starting_seat_id) {
-		System.out.println("GetRequestedSeats called");
+		
 		
 		ShowSectionDetailedInfo seatsQuery =  getShowSectionDetail(wid, sid);
 		if(seatsQuery == null) {

@@ -33,4 +33,8 @@ public class DisplayOrder {
 		
 		return Mask;
 	}
+	
+	public String getOid() {
+		return this.oid;
+	} 
 }

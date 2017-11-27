@@ -12,7 +12,7 @@ public class ShowSectionDetailedInfo {
 	private int price;
 	private List<Seating> seating = new ArrayList<Seating>();
 	
-	ShowSectionDetailedInfo(Show show, Section section){
+	public ShowSectionDetailedInfo(Show show, Section section){
 		this.wid = show.getID();
 		this.show_info = new ShowInfo(show);
 		this.sid = section.getSid();

@@ -30,8 +30,11 @@ public class DonationManager implements BoundaryInterfaceDonation{
 		Collections.sort(subscriptions, Comparator.comparing(Donation::getDid));
 		for(Donation subscription:subscriptions) {
 			if(subscription.getCount() > subscription.getTickets().size()) {
-				subscription.addTicket(tid);
-				subscription.setStatus("assigned");
+				Donation newSubs = subscription;
+				newSubs.addTicket(tid);
+				newSubs.setStatus("assigned");
+				subscriptions.remove(subscription);
+				subscriptions.add(newSubs);
 				break;
 			}
 		}

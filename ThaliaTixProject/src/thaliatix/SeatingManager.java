@@ -41,8 +41,12 @@ public class SeatingManager implements BoundaryInterfaceSeating{
 	    }
 	   	
 	   	public SectionDetail getSectionDetail(String lid) {
-			SectionDetail sectionDetail = new SectionDetail(findById(lid));
-			return(sectionDetail);
+			Section returnedSection = findById(lid);
+			if(returnedSection.isNil()) {
+				return new NullSectionDetail();
+			}else {
+				return(new SectionDetail(returnedSection));
+			}
 		}
 	   	
 		public Seating createSeating(String r, int seatNum, int cid) {

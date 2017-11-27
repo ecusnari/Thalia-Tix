@@ -30,7 +30,7 @@ public class Ticket {
 		return tid;
 	}
 	public void setTid() {
-		this.tid = Integer.toString(UniqueOIDGenerator.getUniqueID());
+		this.tid = Integer.toString(UniqueTIDGenerator.getUniqueID());
 	}
 	public int getPrice() {
 		return price;

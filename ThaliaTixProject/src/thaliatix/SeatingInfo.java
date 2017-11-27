@@ -9,4 +9,14 @@ public class SeatingInfo {
 		this.sid = section.getSid();
 		this.price = section.getPrice();
 	}
+
+	public String getSid() {
+		return sid;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+	
+	
 }

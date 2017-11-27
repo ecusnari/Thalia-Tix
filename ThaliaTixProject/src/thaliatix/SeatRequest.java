@@ -38,5 +38,43 @@ public class SeatRequest {
 	public void addSeating(Seating availableSeating) {
 		this.seating.add(availableSeating);
 	}
+
+
+	public ShowInfo getShow_info() {
+		return show_info;
+	}
+
+
+
+	public String getSid() {
+		return sid;
+	}
+
+
+
+	public String getSection_name() {
+		return section_name;
+	}
+
+
+
+	public String getStarting_seat_id() {
+		return starting_seat_id;
+	}
+
+
+
+	public String getStatus() {
+		return status;
+	}
+
+
+
+
+
+
+	
+	
+	
 	
 }

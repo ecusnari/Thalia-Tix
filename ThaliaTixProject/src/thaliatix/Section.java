@@ -34,9 +34,7 @@ public class Section {
 	public String getSid() {
 		return sid;
 	}
-	public void setSid(String sid) {
-		this.sid = sid;
-	}
+	
 	public String getSection_name() {
 		return section_name;
 	}

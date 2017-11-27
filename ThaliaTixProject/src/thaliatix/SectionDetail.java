@@ -8,6 +8,9 @@ public class SectionDetail {
 	private String section_name;
 	private List<SeatingReducedInfo> seating = new ArrayList<SeatingReducedInfo>();
 	
+	public SectionDetail() {
+		
+	}
 	public SectionDetail(Section section){
 		this.sid = section.getSid();
 		this.section_name = section.getSection_name();
