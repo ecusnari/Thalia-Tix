@@ -13,6 +13,7 @@
         <pathelement location="WebContent/WEB-INF/lib/gson-2.6.2.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/jersey-bundle-1.19.1.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/jsr311-api-1.1.1.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/junit.jar"/>
         <pathelement location="WebContent/WEB-INF/classes"/>
     </path>
     <path id="EAR Libraries.libraryclasspath"/>
@@ -31,7 +32,6 @@
         <pathelement location="../../.p2/pool/plugins/org.apiguardian_1.0.0.v20170910-2246.jar"/>
         <pathelement location="../../.p2/pool/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
         <pathelement location="../../.p2/pool/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
-        <pathelement location="WebContent/WEB-INF/lib/junit.jar"/>
     </path>
     <path id="ThaliaTixProject.classpath">
         <pathelement location="build/classes"/>
@@ -43,7 +43,6 @@
         <mkdir dir="build/classes"/>
         <copy includeemptydirs="false" todir="build/classes">
             <fileset dir="src">
-                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -62,14 +61,6 @@
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target name="ThaliaTixProject (1)">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <jvmarg line="-ea"/>
-            <classpath refid="ThaliaTixProject.classpath"/>
-        </junit>
-    </target>
     <target name="src">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
@@ -78,7 +69,8 @@
             <classpath refid="ThaliaTixProject.classpath"/>
         </junit>
     </target>
-    <target name="thaliatix">
+    
+    <target name="ThaliaTixProject (1)">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
@@ -94,39 +86,18 @@
             <report format="frames" todir="${junit.output.dir}"/>
         </junitreport>
     </target>
-
-    <target name="junit" depends="resolve">
-
-        <junit printsummary="yes" haltonfailure="no">
-
-            <classpath refid="test.path" />
-            <classpath location="${build.dir}" />
-
-            <!-- Make sure these two libraries are included -->
-            <classpath location="WebContent/WEB-INF/lib/junit.jar" />
-            <classpath location="lib/hamcrest-core-1.3.jar" />
-
-            <test name="Testing.BasicTests"
-                haltonfailure="no" todir="${report.dir}" outfile="result">
-                <formatter type="plain" />
-                <formatter type="xml" />
-            </test>
-
-        </junit>
-    </target>
-
     <target name="war" description="Bundles the application as a WAR file" depends="clean, build">
-        <mkdir dir="WebContent/WEB-INF/classes"/>
-            
-        <copy includeemptydirs="false" todir="WebContent/WEB-INF/classes">
-                <fileset dir="build/classes">
-                <include name="**/*.class"/>
-                </fileset>
-        </copy>
-            
-        <war destfile="thalia.war"
-            basedir="WebContent"
-            needxmlfile="false">
-        </war>
-    </target>
+    <mkdir dir="WebContent/WEB-INF/classes"/>
+     
+    <copy includeemptydirs="false" todir="WebContent/WEB-INF/classes">
+            <fileset dir="build/classes">
+            <include name="**/*.class"/>
+            </fileset>
+    </copy>
+     
+    <war destfile="Thalia.war"
+        basedir="WebContent"
+        needxmlfile="false">
+    </war>
+</target>
 </project>
