@@ -8,6 +8,9 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/junit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ericas/eclipse-workspace/ThaliaTixProject/WebContent/WEB-INF/lib/junit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ericas/eclipse-workspace/ThaliaTixProject/WebContent/WEB-INF/lib/org.junit.jupiter.api_5.0.0.v20170910-2246.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
