@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>REST_controller.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">ThaliaTixProject (1) (27.11.2017 22:04:06)</a> &gt; <a href="../../index.html" class="el_group">ThaliaTixProject</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">thaliatix</a> &gt; <span class="el_source">REST_controller.java</span></div><h1>REST_controller.java</h1><pre class="source lang-java linenums">package thaliatix;
+
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+
+
+
+@Path(&quot;/thalia&quot;)
+<span class="nc" id="L23">public class REST_controller {</span>
+<span class="nc" id="L24">	private BoundaryInterfaceShow showManager = new ShowManager();</span>
+<span class="nc" id="L25">	private BoundaryInterfaceSeating seatingManager = new SeatingManager();</span>
+<span class="nc" id="L26">	private BoundaryInterfaceOrder orderManager = new OrderManager();</span>
+<span class="nc" id="L27">	private BoundaryInterfaceTicket ticketManager = new TicketManager();</span>
+<span class="nc" id="L28">	private BoundaryInterfaceDonation donationManager = new DonationManager();</span>
+	
+	@PostConstruct
+    public void postConstruct() {
+        //Initialize theater seating
+    	
+<span class="nc bnc" id="L34" title="All 2 branches missed.">		if(seatingManager.getAllSeats().size()==0) {</span>
+<span class="nc" id="L35">			seatingManager.ConfigureGeneralSeatsLayout();</span>
+		}
+		
+<span class="nc" id="L38">	}</span>
+    
+    
+    //CREATE SHOWS
+	@Path(&quot;/shows&quot;)
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response makeShow(String json) {
+		try {
+			//Get data from POST Json input
+<span class="nc" id="L48">	        Gson gson = new Gson();</span>
+<span class="nc" id="L49">	        JsonObject obj = gson.fromJson(json, JsonObject.class);</span>
+<span class="nc" id="L50">			JsonElement showJSON = obj.get(&quot;show_info&quot;);</span>
+<span class="nc" id="L51">			JsonArray seatJSON = obj.getAsJsonArray(&quot;seating_info&quot;);</span>
+			
+<span class="nc" id="L53">			String showString = showJSON.toString();</span>
+<span class="nc" id="L54">			String seatString = seatJSON.get(0).toString();</span>
+			
+<span class="nc" id="L56">			System.out.println(showString);</span>
+<span class="nc" id="L57">			System.out.println(seatString);</span>
+			
+<span class="nc" id="L59">	        Show s = gson.fromJson(showString, Show.class); </span>
+	   
+	        
+	        try{
+<span class="nc bnc" id="L63" title="All 6 branches missed.">	        	if(s.getName().isEmpty() || s.getDate().isEmpty() || s.getTime().isEmpty()) {</span>
+<span class="nc" id="L64">	        		System.out.println(&quot;Missing data.\n&quot;);}</span>
+	        		
+<span class="nc" id="L66">	        }catch(Exception e) {</span>
+<span class="nc" id="L67">	        	return Response.status(Response.Status.BAD_REQUEST).entity(&quot;Data from show_info is missing.&quot;).build();</span>
+	        }
+	        
+<span class="nc" id="L70">	        Show ns = showManager.createShow(s.getName(), s.getWeb(), s.getDate(), s.getTime());</span>
+	        
+<span class="nc" id="L72">	        BoundaryInterfaceSeating newSeatingLayout = new SeatingManager();</span>
+<span class="nc" id="L73">	        newSeatingLayout.ConfigureGeneralSeatsLayout();</span>
+	        
+<span class="nc bnc" id="L75" title="All 2 branches missed.">	        for(int i = 0; i &lt; seatJSON.size(); i++)</span>
+	        {
+<span class="nc" id="L77">	        		JsonObject seatJSONobj = seatJSON.get(i).getAsJsonObject();</span>
+<span class="nc" id="L78">	        		Section sec = gson.fromJson(seatJSONobj, Section.class);</span>
+<span class="nc" id="L79">	        		newSeatingLayout.updateSectionPrice(sec.getSid(), sec.getPrice());</span>
+	        }	
+	        
+<span class="nc bnc" id="L82" title="All 2 branches missed.">		    for(Section section: newSeatingLayout.getAllSeats()) {</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">		    	if(section.getPrice()!=0) {</span>
+<span class="nc" id="L84">		    		ns.add(section);</span>
+		    	}
+		    }
+	        
+<span class="nc" id="L88">		    Gson gsonb = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();</span>
+<span class="nc" id="L89">		    String st = gsonb.toJson(ns);</span>
+		    
+		    
+<span class="nc" id="L92">		    return Response.ok(st, MediaType.APPLICATION_JSON).status(201).build(); </span>
+<span class="nc" id="L93">		}catch(Exception e) {</span>
+<span class="nc" id="L94">			e.printStackTrace();</span>
+<span class="nc" id="L95">			return Response.status(Response.Status.BAD_REQUEST).build();</span>
+		}
+     
+    }
+    
+    //UPDATE SHOWS
+    @Path(&quot;/shows/{id}&quot;)
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateShow(@PathParam(&quot;id&quot;) String showID, String json) {
+    	
+        
+<span class="nc" id="L107">    	SpecificShowDetail sIn = showManager.getShowDetail(showID);</span>
+        
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (sIn.isNil()) {</span>
+            // return a 404
+<span class="nc" id="L111">            return Response.status(Response.Status.NOT_FOUND).entity(&quot;Entity not found for ID: &quot; + showID).build();</span>
+        }
+        else {
+        
+	        try {
+				//Get data from PUT JSON input
+<span class="nc" id="L117">		        Gson gson = new Gson();</span>
+<span class="nc" id="L118">		        JsonObject obj = gson.fromJson(json, JsonObject.class);</span>
+<span class="nc" id="L119">				JsonElement showJSON = obj.get(&quot;show_info&quot;);</span>
+<span class="nc" id="L120">				JsonArray seatJSON = obj.getAsJsonArray(&quot;seating_info&quot;);</span>
+				
+<span class="nc" id="L122">				String showString = showJSON.toString();</span>
+<span class="nc" id="L123">				String seatString = seatJSON.get(0).toString();</span>
+				
+<span class="nc" id="L125">				System.out.println(showString);</span>
+<span class="nc" id="L126">				System.out.println(seatString);</span>
+				
+				//Show object retrieved from PUT JSON
+<span class="nc" id="L129">		        Show s = gson.fromJson(showString, Show.class);      </span>
+		        
+		        //Check if PUT JSON has the basic fields
+		        try{
+<span class="nc bnc" id="L133" title="All 6 branches missed.">		        	if(s.getName().isEmpty() || s.getDate().isEmpty() || s.getTime().isEmpty()) {</span>
+<span class="nc" id="L134">		        		System.out.println(&quot;Missing data.\n&quot;);}</span>
+		        		
+<span class="nc" id="L136">		        }catch(Exception e) {</span>
+<span class="nc" id="L137">		        	return Response.status(Response.Status.BAD_REQUEST).entity(&quot;Data from show_info is missing.&quot;).build();</span>
+		        }
+		        
+		        
+		        //Add to s object the section information from PUT JSON
+<span class="nc" id="L142">		        System.out.println(&quot;Seating manager set=up for new show(PUT)&quot;);</span>
+<span class="nc" id="L143">		        BoundaryInterfaceSeating newSeatingLayout = new SeatingManager();</span>
+<span class="nc" id="L144">		        newSeatingLayout.ConfigureGeneralSeatsLayout();</span>
+		        
+<span class="nc bnc" id="L146" title="All 2 branches missed.">		        for(int i = 0; i &lt; seatJSON.size(); i++)</span>
+		        {
+<span class="nc" id="L148">		        		JsonObject seatJSONobj = seatJSON.get(i).getAsJsonObject();</span>
+<span class="nc" id="L149">		        		Section sec = gson.fromJson(seatJSONobj, Section.class);</span>
+<span class="nc" id="L150">		        		newSeatingLayout.updateSectionPrice(sec.getSid(), sec.getPrice());</span>
+		        }	
+		        
+<span class="nc bnc" id="L153" title="All 2 branches missed.">			    for(Section section: newSeatingLayout.getAllSeats()) {</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">			    	if(section.getPrice()!=0) {</span>
+<span class="nc" id="L155">			    		s.add(section);</span>
+			    	}
+			    }	
+			      
+<span class="nc" id="L159">		        s.setWid(showID);</span>
+		        
+<span class="nc" id="L161">        		showManager.updateShow(showID, s);</span>
+<span class="nc" id="L162">        		Gson gsonb = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();</span>
+<span class="nc" id="L163">    		    String st = gsonb.toJson(s);</span>
+<span class="nc" id="L164">        		return Response.status(Response.Status.ACCEPTED).build();</span>
+<span class="nc" id="L165">		}catch(Exception e) {</span>
+<span class="nc" id="L166">			e.printStackTrace();</span>
+<span class="nc" id="L167">			return Response.status(Response.Status.BAD_REQUEST).build();</span>
+		}
+        
+        }
+     
+    }
+    
+    
+  //VIEW SHOWS by ID
+    @Path(&quot;/shows/{id}&quot;)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSpecificShow(@PathParam(&quot;id&quot;) String lid) {
+        // call the &quot;Get Show Detail&quot; use case
+<span class="nc" id="L181">        SpecificShowDetail s = showManager.getShowDetail(lid);</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (s.isNil()) {</span>
+            // return a 404
+<span class="nc" id="L184">            return Response.status(Response.Status.NOT_FOUND).entity(&quot;Entity not found for ID: &quot; + lid).build();</span>
+        } else {
+<span class="nc" id="L186">            Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L187">            String st = gson.toJson(s);</span>
+<span class="nc" id="L188">            return Response.ok(st).build();</span>
+        }
+    }
+    
+    //VIEW ALL SHOWS
+    @Path(&quot;/shows&quot;)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllShows() {
+        // calls the &quot;Get All Shows&quot; use case
+<span class="nc" id="L198">        Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L199">        String s = gson.toJson(showManager.getAllShows());</span>
+<span class="nc" id="L200">        return Response.status(Response.Status.OK).entity(s).build();</span>
+    }
+
+    //VIEW SHOW if given ID and view all it's sections
+    @Path(&quot;/shows/{id}/sections&quot;)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSectionsForShowID(@PathParam(&quot;id&quot;) String  wid) {
+    	
+    	//calls the &quot;Get Show Sections&quot; use case
+<span class="nc" id="L210">    	Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L211">    	String s = gson.toJson(showManager.getShowSections(wid));</span>
+<span class="nc" id="L212">    	System.out.println(s);</span>
+<span class="nc" id="L213">    	return Response.status(Response.Status.OK).entity(s).build();</span>
+    	
+    }
+    
+    //VIEW SHOW if given wid and VIEW particular sections if given sid
+    @Path(&quot;shows/{id}/sections/{sid}&quot;)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getExactSectionForShowID(@PathParam(&quot;id&quot;) String showID, @PathParam(&quot;sid&quot;) String secID) {
+		
+<span class="nc" id="L223">    	ShowSectionDetailedInfo s = showManager.getShowSectionDetail(showID, secID);</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        if (s == null) {</span>
+            // return a 404
+<span class="nc" id="L226">            return Response.status(Response.Status.NOT_FOUND).entity(&quot;Entity not found for ID: &quot; + showID).build();</span>
+        } else {
+<span class="nc" id="L228">            Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L229">            String st = gson.toJson(s);</span>
+<span class="nc" id="L230">            return Response.ok(st).build();</span>
+        }
+    	
+    	    	
+    }
+    
+    
+    
+    ///////////////////////////////SEATING//////////////////////////////
+    
+    //VIEW ALL SEATING
+    @Path(&quot;seating&quot;)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    //Two use cases covered:
+    //1. Get all seatings
+    //2. Get requested seats
+    public Response getAllSeats(@QueryParam(&quot;show&quot;) String showID, @QueryParam(&quot;section&quot;) String sectionID, @QueryParam(&quot;count&quot;) int count, @QueryParam(&quot;starting_seat_id&quot;) String start_cid) {
+        // calls the &quot;Get All Seats&quot; use case
+<span class="nc" id="L249">    	System.out.println(&quot;wid: &quot; + showID + &quot;, sid:&quot; + sectionID + &quot;, count:&quot; + count + &quot; start id: &quot; + start_cid);</span>
+<span class="nc bnc" id="L250" title="All 6 branches missed.">    	if(showID==null || sectionID == null || count == 0) {</span>
+<span class="nc" id="L251">    		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();</span>
+<span class="nc" id="L252">            String s = gson.toJson(seatingManager.getAllSeats());</span>
+<span class="nc" id="L253">            return Response.status(Response.Status.OK).entity(s).build();</span>
+    	}
+<span class="nc bnc" id="L255" title="All 6 branches missed.">    	else if(showID != null &amp;&amp; sectionID != null &amp;&amp; count != 0) {</span>
+<span class="nc" id="L256">    		SeatRequest jsonSeatsRequested =  showManager.GetRequestedSeats(showID, sectionID, count, start_cid);</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">    		if(jsonSeatsRequested == null) {</span>
+<span class="nc" id="L258">    			return Response.status(Response.Status.BAD_REQUEST).entity(&quot;The start id does not exist in the chosen section&quot;).build();</span>
+    		}
+<span class="nc" id="L260">    		Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L261">            String st = gson.toJson(jsonSeatsRequested);</span>
+<span class="nc" id="L262">            return Response.ok(st).build();</span>
+    	}
+<span class="nc" id="L264">		return Response.status(Response.Status.BAD_REQUEST).entity(&quot;Request Path does not match any resourse for /seating&quot;).build();</span>
+        
+    }
+    
+    //VIEW SPECIFIC SECTION
+    @Path(&quot;/seating/{id}&quot;)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSpecificSection(@PathParam(&quot;id&quot;) String lid) {
+        // call the &quot;Get Show Detail&quot; use case
+<span class="nc" id="L274">        SectionDetail s = seatingManager.getSectionDetail(lid);</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">        if (s.isNil()) {</span>
+            // return a 404
+<span class="nc" id="L277">            return Response.status(Response.Status.NOT_FOUND).entity(&quot;Entity not found for ID: &quot; + lid).build();</span>
+        } else {
+<span class="nc" id="L279">            Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L280">            String st = gson.toJson(s);</span>
+<span class="nc" id="L281">            return Response.ok(st).build();</span>
+        }
+    }
+
+    ///////////////////////////////ORDERS///////////////////////////////
+    
+    //CREATE ORDER
+    @Path(&quot;/orders&quot;)
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response makeOrder(String json) {
+		
+    	try {
+    		//Get data from POST Json input
+<span class="nc" id="L295">	        Gson gson = new Gson();</span>
+<span class="nc" id="L296">	        JsonObject obj = gson.fromJson(json, JsonObject.class);</span>
+			
+<span class="nc" id="L298">	        JsonElement widJSON = obj.get(&quot;wid&quot;);</span>
+<span class="nc" id="L299">	        JsonElement sidJSON = obj.get(&quot;sid&quot;);</span>
+<span class="nc" id="L300">			JsonArray seatsJSON = obj.getAsJsonArray(&quot;seats&quot;);</span>
+<span class="nc" id="L301">			JsonElement patronInfoJson = obj.get(&quot;patron_info&quot;);</span>
+			
+<span class="nc" id="L303">			String widString = widJSON.getAsString();</span>
+<span class="nc" id="L304">			String sidString = sidJSON.getAsString();</span>
+<span class="nc" id="L305">			String patronInfoString = patronInfoJson.toString();</span>
+			
+<span class="nc" id="L307">			System.out.println(widString);</span>
+<span class="nc" id="L308">			System.out.println(sidString);</span>
+<span class="nc" id="L309">			System.out.println(patronInfoString);</span>
+			
+			try{
+<span class="nc bnc" id="L312" title="All 6 branches missed.">				if(widString.isEmpty()|| sidString.isEmpty()||patronInfoString.isEmpty()) {</span>
+<span class="nc" id="L313">					System.out.println(&quot;Missing data in the input JSON.&quot;);</span>
+				}
+<span class="nc" id="L315">			}catch(Exception e) {</span>
+<span class="nc" id="L316">				return Response.status(Response.Status.BAD_REQUEST).entity(&quot;Data from input JSON is missing.&quot;).build();</span>
+			}
+			
+			
+			String start_cid;
+<span class="nc" id="L321">			List&lt;Seat&gt; seats = new ArrayList&lt;Seat&gt;();</span>
+			try {
+<span class="nc bnc" id="L323" title="All 2 branches missed.">				for(int i = 0; i &lt; seatsJSON.size();i++) {</span>
+<span class="nc" id="L324">					JsonObject seatJsonobj = seatsJSON.get(i).getAsJsonObject();</span>
+<span class="nc" id="L325">					Seat seatRetrieved = gson.fromJson(seatJsonobj, Seat.class);</span>
+<span class="nc" id="L326">					seats.add(seatRetrieved);</span>
+				}
+<span class="nc" id="L328">				start_cid = seats.get(0).getCid();</span>
+<span class="nc" id="L329">			}catch(Exception e){</span>
+<span class="nc" id="L330">				return Response.status(Response.Status.BAD_REQUEST).entity(&quot;Data from input JSON is missing for 'seats'.&quot;).build();</span>
+			}
+			
+			//Check Requested Seats Availability
+<span class="nc" id="L334">			boolean seatsAvailable = showManager.CheckSeatsAvailability(widString, sidString, seats);</span>
+<span class="nc bnc" id="L335" title="All 2 branches missed.">			if(!seatsAvailable) {return Response.status(Response.Status.BAD_REQUEST).entity(&quot;Seats requested are unavailable&quot;).build();}</span>
+				        
+<span class="nc" id="L337">			Order newOrder = new Order();</span>
+<span class="nc" id="L338">			PatronInfo newPatron = gson.fromJson(patronInfoString, PatronInfo.class);</span>
+<span class="nc" id="L339">			ShowInfo showInfo = new ShowInfo(showManager.findById(widString));</span>
+<span class="nc" id="L340">			newOrder.setWid(Integer.toString((Integer.parseInt(widString))));</span>
+<span class="nc" id="L341">			System.out.println(newOrder.getWid());</span>
+<span class="nc" id="L342">			newOrder.setShow_info(showInfo);</span>
+<span class="nc" id="L343">			System.out.println(newOrder.getShow_info().toString());</span>
+<span class="nc" id="L344">			newOrder.setNumber_of_tickets(seats.size());</span>
+<span class="nc" id="L345">			newOrder.setPatron_info(newPatron);</span>
+			
+			//Update Status of seats to &quot;sold&quot;
+<span class="nc" id="L348">			showManager.SetTicketStatusToSold(widString, sidString, seats);</span>
+			
+			//Create Tickets and add to Ticket Manager
+<span class="nc" id="L351">			int price = showManager.GetSectionPriceForShow(widString, sidString);</span>
+			
+<span class="nc bnc" id="L353" title="All 2 branches missed.">			for(Seat availableSeat:seats) {</span>
+<span class="nc" id="L354">				Section getSectionInfoForTicket = showManager.getSectionInfoForSeat(widString, sidString, availableSeat.getCid());</span>
+								
+<span class="nc" id="L356">				Ticket newTicket = new Ticket(widString, showInfo, newPatron, getSectionInfoForTicket);</span>
+<span class="nc" id="L357">				Ticket ticketCompleted = ticketManager.createTicket(newTicket);</span>
+				//Add Ticket to Order
+<span class="nc" id="L359">				newOrder.addTicket(ticketCompleted);</span>
+				
+			}
+			
+			//Add order_amount to newOrder
+<span class="nc" id="L364">			newOrder.setOrder_amount(price*seats.size());</span>
+			
+	        
+<span class="nc" id="L367">	        Order orderCompleted = orderManager.createOrder(newOrder);</span>
+	        
+	        
+<span class="nc" id="L370">		    Gson gsonO = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L371">		    String st = gsonO.toJson(new OrderReducedInfo(orderCompleted));		    </span>
+<span class="nc" id="L372">		    return Response.ok(st, MediaType.APPLICATION_JSON).status(201).build();</span>
+    		
+<span class="nc" id="L374">    	}catch(Exception e){</span>
+<span class="nc" id="L375">    		e.printStackTrace();</span>
+<span class="nc" id="L376">			return Response.status(Response.Status.BAD_REQUEST).build();</span>
+    	}
+    	
+    	
+    }
+
+    
+    //GET ALL ORDERS and ALL ORDERS BETWEEN TWO DATES
+    @Path(&quot;/orders&quot;)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllOrders(@QueryParam(&quot;start_date&quot;) String start_date, @QueryParam(&quot;end_date&quot;) String end_date) {
+    	
+<span class="nc bnc" id="L389" title="All 4 branches missed.">    	if(start_date == null || end_date==null) {</span>
+<span class="nc" id="L390">    		Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L391">            String s = gson.toJson(orderManager.getAllOrders());</span>
+<span class="nc" id="L392">            return Response.status(Response.Status.OK).entity(s).build();</span>
+    	}else {
+    		try {
+<span class="nc" id="L395">    			SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyyMMdd&quot;);</span>
+<span class="nc" id="L396">    			Date startDate = dateFormat.parse(start_date);</span>
+<span class="nc" id="L397">    			Date endDate = dateFormat.parse(end_date);</span>
+<span class="nc" id="L398">    		}catch(Exception e) {</span>
+<span class="nc" id="L399">    			return Response.status(Response.Status.BAD_REQUEST).entity(&quot;Start or End date have the wrong format&quot;).build();</span>
+    		}
+    		
+<span class="nc" id="L402">    		Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L403">    		String s = gson.toJson(orderManager.getAllOrdersInTimeFrame(start_date, end_date));</span>
+<span class="nc" id="L404">    		return Response.status(Response.Status.OK).entity(s).build();</span>
+    	}
+    	
+    }
+    
+    //GET ORDER BY ID
+    @Path(&quot;/orders/{oid}&quot;)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrderById(@PathParam(&quot;oid&quot;) String orderID) {
+<span class="nc" id="L414">    	Gson gson = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L415">    	Order getOrder = orderManager.getOrderById(orderID);</span>
+<span class="nc bnc" id="L416" title="All 2 branches missed.">    	if(getOrder.isNill()) {</span>
+<span class="nc" id="L417">    		return Response.status(Response.Status.NOT_FOUND).entity(&quot;Order not found for ID: &quot; + orderID).build();</span>
+    	}
+<span class="nc" id="L419">        String s = gson.toJson(getOrder);</span>
+<span class="nc" id="L420">        return Response.status(Response.Status.OK).entity(s).build();</span>
+    }
+    
+
+    //SUBSCRIBE
+    @Path(&quot;/shows/{wid}/donations&quot;)
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response subscribeForDonation(@PathParam(&quot;wid&quot;) String showID, String json) {
+    	try {
+    		//Get data from POST Json input
+<span class="nc" id="L431">	        Gson gson = new Gson();</span>
+<span class="nc" id="L432">	        JsonObject obj = gson.fromJson(json, JsonObject.class);</span>
+			
+<span class="nc" id="L434">	        JsonElement widJSON = obj.get(&quot;wid&quot;);</span>
+<span class="nc" id="L435">	        JsonElement countJSON = obj.get(&quot;count&quot;);</span>
+<span class="nc" id="L436">			JsonElement patronInfoJson = obj.get(&quot;patron_info&quot;);</span>
+			
+<span class="nc" id="L438">			String widString = widJSON.getAsString();</span>
+<span class="nc" id="L439">			int countInt = countJSON.getAsInt();</span>
+<span class="nc" id="L440">			String patronInfoString = patronInfoJson.toString();</span>
+			
+<span class="nc bnc" id="L442" title="All 2 branches missed.">			if(!widString.equals(showID)) {return Response.status(Response.Status.BAD_REQUEST).entity(&quot;Mismatch in url show ID and POST 'wid'.&quot;).build();}</span>
+			
+<span class="nc" id="L444">			System.out.println(&quot;Donation POST&quot;);</span>
+<span class="nc" id="L445">			System.out.println(widString);</span>
+<span class="nc" id="L446">			System.out.println(countInt);</span>
+<span class="nc" id="L447">			System.out.println(patronInfoString);</span>
+			
+			try{
+<span class="nc bnc" id="L450" title="All 4 branches missed.">				if(widString.isEmpty()||patronInfoString.isEmpty()) {</span>
+<span class="nc" id="L451">					System.out.println(&quot;Missing data in the input JSON.&quot;);</span>
+				}
+<span class="nc" id="L453">			}catch(Exception e) {</span>
+<span class="nc" id="L454">				return Response.status(Response.Status.BAD_REQUEST).entity(&quot;Data from input JSON is missing.&quot;).build();</span>
+			}
+			
+<span class="nc" id="L457">			PatronInfo newPatron = gson.fromJson(patronInfoString, PatronInfo.class);</span>
+<span class="nc" id="L458">			List&lt;String&gt; ticketsList = orderManager.getDonatedTickets(showID, countInt);</span>
+			
+			String status;
+			
+<span class="nc bnc" id="L462" title="All 2 branches missed.">			if(ticketsList.size()==0) {</span>
+<span class="nc" id="L463">				status = &quot;pending&quot;;</span>
+<span class="nc" id="L464">			}else {</span>
+<span class="nc" id="L465">				status = &quot;assigned&quot;;</span>
+				
+			}
+			
+<span class="nc" id="L469">			Donation newSubscription = new Donation(showID, countInt, status, ticketsList, newPatron);</span>
+<span class="nc" id="L470">			System.out.println(&quot;newDonation: &quot; + newSubscription );</span>
+			
+<span class="nc" id="L472">			Gson gsonD = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();</span>
+<span class="nc" id="L473">		    String st = gsonD.toJson(donationManager.createSubscription(newSubscription));		    </span>
+<span class="nc" id="L474">		    return Response.ok(st, MediaType.APPLICATION_JSON).status(201).build();</span>
+			
+<span class="nc" id="L476">    	}catch(Exception e){</span>
+<span class="nc" id="L477">    		return Response.status(Response.Status.BAD_REQUEST).entity(&quot;Data from input JSON is missing.&quot;).build();</span>
+    	}
+    	
+    	
+    }
+    
+    //GET SUBSCRIPTION BY ID
+    @Path(&quot;/shows/{wid}/donations/{did}&quot;)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSubscriptionInfo(@PathParam(&quot;wid&quot;) String showID, @PathParam(&quot;did&quot;) String donationID) {
+    	
+    	
+<span class="nc" id="L490">    	Donation foundSubscription = donationManager.getSubscriptionById(showID, donationID);</span>
+<span class="nc bnc" id="L491" title="All 2 branches missed.">    	if(foundSubscription == null) {</span>
+<span class="nc" id="L492">    		return Response.status(Response.Status.BAD_REQUEST).entity(&quot;No such subscription found for wid &quot; +showID + &quot; and did &quot;+donationID).build();</span>
+    	}else {
+<span class="nc" id="L494">    		Gson gsonO = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="nc" id="L495">    		String st = gsonO.toJson(foundSubscription);		    </span>
+<span class="nc" id="L496">    	    return Response.ok(st, MediaType.APPLICATION_JSON).status(201).build();</span>
+    	}
+	    
+    	
+    } 
+    
+    //DONATE TICKETS
+    @Path(&quot;/tickets/donations&quot;)
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response donateTicket(String json) {
+<span class="nc" id="L507">    	Gson gson = new Gson();</span>
+<span class="nc" id="L508">        JsonObject obj = gson.fromJson(json, JsonObject.class);</span>
+		
+        
+<span class="nc" id="L511">		JsonElement ticketsJson = obj.get(&quot;tickets&quot;);</span>
+<span class="nc" id="L512">		String ticketsString = ticketsJson.toString();</span>
+		
+<span class="nc" id="L514">		List&lt;String&gt; tickets = gson.fromJson(ticketsString, List.class); </span>
+		
+<span class="nc bnc" id="L516" title="All 2 branches missed.">		if(tickets.size()==0) {</span>
+<span class="nc" id="L517">			return Response.status(Response.Status.BAD_REQUEST).entity(&quot;No tickets provided.&quot;).build();</span>
+		}
+		
+		
+<span class="nc" id="L521">		System.out.println(&quot;Donating Tickets POST&quot;);</span>
+<span class="nc" id="L522">		System.out.println(ticketsJson.toString());</span>
+		int i;
+<span class="nc bnc" id="L524" title="All 2 branches missed.">		for(i=0; i &lt; tickets.size(); i++) {</span>
+			
+<span class="nc" id="L526">			String tid = tickets.get(i);</span>
+			
+			//mark order-&gt;ticket status as donated
+<span class="nc" id="L529">			orderManager.setTicketStatusDonated(tid);</span>
+			
+			//loop through sorted donation list to assign new donations
+<span class="nc" id="L532">			donationManager.assignNewDonations(tid);</span>
+		}
+<span class="nc" id="L534">    	return Response.status(Response.Status.CREATED).entity(&quot;&quot;).build();</span>
+    }
+    
+    
+    //GET REPORTS and GET REPORTS BY 
+    @Path(&quot;/reports/&quot;)
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getReports() {
+<span class="nc" id="L543">    	Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();</span>
+<span class="nc" id="L544">    	List&lt;Report&gt; reports = new ArrayList&lt;Report&gt;();</span>
+<span class="nc" id="L545">    	reports.add(new Report(&quot;801&quot;, &quot;Theatre occupancy&quot;));</span>
+<span class="nc" id="L546">    	reports.add(new Report(&quot;802&quot;, &quot;Revenue from ticket sales&quot;));</span>
+<span class="nc" id="L547">    	reports.add(new Report(&quot;803&quot;, &quot;Donated tickets report&quot;));</span>
+    	
+<span class="nc" id="L549">        String s = gson.toJson(reports);</span>
+<span class="nc" id="L550">        return Response.status(Response.Status.OK).entity(s).build();</span>
+    	
+    }
+    
+    
+    
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>ThaliaTixProject (1) (27.11.2017 22:04:06)</div></body></html>

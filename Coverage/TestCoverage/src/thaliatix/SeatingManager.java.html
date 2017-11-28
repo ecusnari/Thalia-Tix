@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>SeatingManager.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">ThaliaTixProject (1) (27.11.2017 22:04:06)</a> &gt; <a href="../../index.html" class="el_group">ThaliaTixProject</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">thaliatix</a> &gt; <span class="el_source">SeatingManager.java</span></div><h1>SeatingManager.java</h1><pre class="source lang-java linenums">package thaliatix;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+//This Class will contain the general Layout of the Theater Seating in form of the list &quot;Sections&quot;
+//This Class contains seating management related functions
+<span class="fc" id="L9">public class SeatingManager implements BoundaryInterfaceSeating{</span>
+
+<span class="fc" id="L11">	private List&lt;Section&gt; Sections = new ArrayList&lt;Section&gt;();</span>
+	
+		
+		
+		public Section createSections(String sct_name, String sID, int price) {
+<span class="fc" id="L16">		   Section s= new Section(sct_name, sID, price);</span>
+<span class="fc" id="L17">		   Sections.add(s);</span>
+<span class="fc" id="L18">	       return(s);</span>
+	    }
+	   
+		public void updateSectionPrice(String sID, int price) {
+<span class="nc bnc" id="L22" title="All 2 branches missed.">			for(Section section: Sections) {</span>
+<span class="nc bnc" id="L23" title="All 2 branches missed.">				if(section.matchesId(sID)) {</span>
+<span class="nc" id="L24">					section.setPrice(price);</span>
+<span class="nc" id="L25">					System.out.println(&quot;Price updated for section &quot; + section.getSid()+&quot;to price &quot;+ section.getPrice() );</span>
+<span class="nc" id="L26">					return;</span>
+				}
+			}
+<span class="nc" id="L29">		}</span>
+		
+		public void addSeatingToSection(String sectionID, Seating seatingToAdd) {
+<span class="fc bfc" id="L32" title="All 2 branches covered.">			for(Section section: Sections) {</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">				if(section.matchesId(sectionID)) {</span>
+<span class="fc" id="L34">					section.addSeating(seatingToAdd);</span>
+				}
+			}
+<span class="fc" id="L37">		}</span>
+		
+	   	public List&lt;Section&gt; getAllSeats() {
+<span class="fc" id="L40">	   		return(Sections);</span>
+	    }
+	   	
+	   	public SectionDetail getSectionDetail(String lid) {
+<span class="fc" id="L44">			Section returnedSection = findById(lid);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">			if(returnedSection.isNil()) {</span>
+<span class="fc" id="L46">				return new NullSectionDetail();</span>
+			}else {
+<span class="fc" id="L48">				return(new SectionDetail(returnedSection));</span>
+			}
+		}
+	   	
+		public Seating createSeating(String r, int seatNum, int cid) {
+<span class="fc" id="L53">			Seating s = new Seating(r);</span>
+<span class="fc" id="L54">			s.addSeat(seatNum, Integer.toString(cid));</span>
+<span class="fc" id="L55">			return s;</span>
+		}
+			
+		
+		private Section findById(String lid) {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">			for(Section section: Sections) {</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">				if(section.matchesId(lid)) {</span>
+<span class="fc" id="L62">					return section;</span>
+				}
+			}
+<span class="fc" id="L65">			return(new NullSection());</span>
+		}
+		public void ConfigureGeneralSeatsLayout() {
+			
+<span class="fc" id="L69">			System.out.println(&quot;ConfigureGeneralSeatsLayout called. At moment size of List&lt;Seactions&gt; is: &quot; + this.Sections.size());			</span>
+			//########################ROW 1########################################
+			//Front Right
+			//ROW 1 Seats 1-4
+<span class="fc" id="L73">			createSections(&quot;Front right&quot;, &quot;123&quot;, 0);</span>
+			
+<span class="fc" id="L75">			int cid = 201;</span>
+<span class="fc" id="L76">			String row = &quot;1&quot;;</span>
+			
+<span class="fc" id="L78">			Seating newSeating = new Seating(row);</span>
+<span class="fc" id="L79">			newSeating.addSeat(1, Integer.toString(cid));</span>
+			
+<span class="fc" id="L81">			cid++; </span>
+<span class="fc" id="L82">			newSeating.addSeat(2, Integer.toString(cid));</span>
+			
+<span class="fc" id="L84">			cid++;</span>
+<span class="fc" id="L85">			newSeating.addSeat(3, Integer.toString(cid));</span>
+			
+<span class="fc" id="L87">			cid++;</span>
+<span class="fc" id="L88">			newSeating.addSeat(4, Integer.toString(cid));</span>
+<span class="fc" id="L89">			addSeatingToSection(&quot;123&quot;, newSeating);</span>
+			
+			
+		
+			//Front Center
+			//ROW 1 Seats 5-8
+<span class="fc" id="L95">			createSections(&quot;Front center&quot;, &quot;124&quot;, 0);</span>
+			
+<span class="fc" id="L97">			cid++;</span>
+<span class="fc" id="L98">			newSeating = new Seating(row);</span>
+<span class="fc" id="L99">			newSeating.addSeat(5, Integer.toString(cid));</span>
+			
+<span class="fc" id="L101">			cid++; </span>
+<span class="fc" id="L102">			newSeating.addSeat(6, Integer.toString(cid));</span>
+			
+<span class="fc" id="L104">			cid++;</span>
+<span class="fc" id="L105">			newSeating.addSeat(7, Integer.toString(cid));</span>
+			
+<span class="fc" id="L107">			cid++;</span>
+<span class="fc" id="L108">			newSeating.addSeat(8, Integer.toString(cid));</span>
+<span class="fc" id="L109">			addSeatingToSection(&quot;124&quot;, newSeating);</span>
+			
+			
+			//Front Left
+			//ROW 1 Seats 9-12
+<span class="fc" id="L114">			createSections(&quot;Front left&quot;, &quot;125&quot;, 0);</span>
+			
+<span class="fc" id="L116">			cid++;</span>
+<span class="fc" id="L117">			newSeating = new Seating(row);</span>
+<span class="fc" id="L118">			newSeating.addSeat(9, Integer.toString(cid));</span>
+			
+<span class="fc" id="L120">			cid++; </span>
+<span class="fc" id="L121">			newSeating.addSeat(10, Integer.toString(cid));</span>
+			
+<span class="fc" id="L123">			cid++;</span>
+<span class="fc" id="L124">			newSeating.addSeat(11, Integer.toString(cid));</span>
+			
+<span class="fc" id="L126">			cid++;</span>
+<span class="fc" id="L127">			newSeating.addSeat(12, Integer.toString(cid));</span>
+<span class="fc" id="L128">			addSeatingToSection(&quot;125&quot;, newSeating);</span>
+			
+			//########################ROW 2########################################
+			//Front Right
+			//ROW 2 Seats 1-4		
+<span class="fc" id="L133">			row = &quot;2&quot;;//row 2</span>
+<span class="fc" id="L134">			cid++;			</span>
+<span class="fc" id="L135">			newSeating = new Seating(row);</span>
+<span class="fc" id="L136">			newSeating.addSeat(1, Integer.toString(cid));</span>
+			
+<span class="fc" id="L138">			cid++; </span>
+<span class="fc" id="L139">			newSeating.addSeat(2, Integer.toString(cid));</span>
+			
+<span class="fc" id="L141">			cid++;</span>
+<span class="fc" id="L142">			newSeating.addSeat(3, Integer.toString(cid));</span>
+			
+<span class="fc" id="L144">			cid++;</span>
+<span class="fc" id="L145">			newSeating.addSeat(4, Integer.toString(cid));</span>
+<span class="fc" id="L146">			addSeatingToSection(&quot;123&quot;, newSeating);</span>
+			
+			
+		
+			//Front Center
+			//ROW 2 Seats 5-8	
+<span class="fc" id="L152">			cid++;</span>
+<span class="fc" id="L153">			newSeating = new Seating(row);</span>
+<span class="fc" id="L154">			newSeating.addSeat(5, Integer.toString(cid));</span>
+			
+<span class="fc" id="L156">			cid++; </span>
+<span class="fc" id="L157">			newSeating.addSeat(6, Integer.toString(cid));</span>
+			
+<span class="fc" id="L159">			cid++;</span>
+<span class="fc" id="L160">			newSeating.addSeat(7, Integer.toString(cid));</span>
+			
+<span class="fc" id="L162">			cid++;</span>
+<span class="fc" id="L163">			newSeating.addSeat(8, Integer.toString(cid));</span>
+<span class="fc" id="L164">			addSeatingToSection(&quot;124&quot;, newSeating);</span>
+			
+			
+			//Front Left
+			//ROW 2 Seats 9-12
+			
+<span class="fc" id="L170">			cid++;</span>
+<span class="fc" id="L171">			newSeating = new Seating(row);</span>
+<span class="fc" id="L172">			newSeating.addSeat(9, Integer.toString(cid));</span>
+			
+<span class="fc" id="L174">			cid++; </span>
+<span class="fc" id="L175">			newSeating.addSeat(10, Integer.toString(cid));</span>
+			
+<span class="fc" id="L177">			cid++;</span>
+<span class="fc" id="L178">			newSeating.addSeat(11, Integer.toString(cid));</span>
+			
+<span class="fc" id="L180">			cid++;</span>
+<span class="fc" id="L181">			newSeating.addSeat(12, Integer.toString(cid));</span>
+<span class="fc" id="L182">			addSeatingToSection(&quot;125&quot;, newSeating);</span>
+			
+			//########################ROW 3########################################
+			//Front Right
+			//ROW 3 Seats 1-4			
+<span class="fc" id="L187">			row=&quot;3&quot;;//row 3</span>
+<span class="fc" id="L188">			cid++;			</span>
+<span class="fc" id="L189">			newSeating = new Seating(row);</span>
+<span class="fc" id="L190">			newSeating.addSeat(1, Integer.toString(cid));</span>
+			
+<span class="fc" id="L192">			cid++; </span>
+<span class="fc" id="L193">			newSeating.addSeat(2, Integer.toString(cid));</span>
+			
+<span class="fc" id="L195">			cid++;</span>
+<span class="fc" id="L196">			newSeating.addSeat(3, Integer.toString(cid));</span>
+			
+<span class="fc" id="L198">			cid++;</span>
+<span class="fc" id="L199">			newSeating.addSeat(4, Integer.toString(cid));</span>
+<span class="fc" id="L200">			addSeatingToSection(&quot;123&quot;, newSeating);</span>
+			
+			
+		
+			//Front Center
+			//ROW 3 Seats 5-9
+<span class="fc" id="L206">			cid++;</span>
+<span class="fc" id="L207">			newSeating = new Seating(row);</span>
+<span class="fc" id="L208">			newSeating.addSeat(5, Integer.toString(cid));</span>
+			
+<span class="fc" id="L210">			cid++; </span>
+<span class="fc" id="L211">			newSeating.addSeat(6, Integer.toString(cid));</span>
+			
+<span class="fc" id="L213">			cid++;</span>
+<span class="fc" id="L214">			newSeating.addSeat(7, Integer.toString(cid));</span>
+			
+<span class="fc" id="L216">			cid++;</span>
+<span class="fc" id="L217">			newSeating.addSeat(8, Integer.toString(cid));</span>
+			
+<span class="fc" id="L219">			cid++;</span>
+<span class="fc" id="L220">			newSeating.addSeat(9, Integer.toString(cid));</span>
+<span class="fc" id="L221">			addSeatingToSection(&quot;124&quot;, newSeating);</span>
+			
+			//Front Left
+			//ROW 3 Seats 10-13
+<span class="fc" id="L225">			cid++; </span>
+<span class="fc" id="L226">			newSeating = new Seating(row);</span>
+<span class="fc" id="L227">			newSeating.addSeat(10, Integer.toString(cid));</span>
+			
+<span class="fc" id="L229">			cid++;</span>
+<span class="fc" id="L230">			newSeating.addSeat(11, Integer.toString(cid));</span>
+			
+<span class="fc" id="L232">			cid++;</span>
+<span class="fc" id="L233">			newSeating.addSeat(12, Integer.toString(cid));</span>
+			
+<span class="fc" id="L235">			cid++;</span>
+<span class="fc" id="L236">			newSeating.addSeat(13, Integer.toString(cid));</span>
+<span class="fc" id="L237">			addSeatingToSection(&quot;125&quot;, newSeating);</span>
+			
+			
+			//########################ROW 4########################################
+			//Front Right
+			//ROW 4 Seats 1-4			
+<span class="fc" id="L243">			row=&quot;4&quot;;//row 4</span>
+<span class="fc" id="L244">			cid++;						</span>
+<span class="fc" id="L245">			newSeating = new Seating(row);</span>
+<span class="fc" id="L246">			newSeating.addSeat(1, Integer.toString(cid));</span>
+			
+<span class="fc" id="L248">			cid++; </span>
+<span class="fc" id="L249">			newSeating.addSeat(2, Integer.toString(cid));</span>
+			
+<span class="fc" id="L251">			cid++;</span>
+<span class="fc" id="L252">			newSeating.addSeat(3, Integer.toString(cid));</span>
+			
+<span class="fc" id="L254">			cid++;</span>
+<span class="fc" id="L255">			newSeating.addSeat(4, Integer.toString(cid));</span>
+<span class="fc" id="L256">			addSeatingToSection(&quot;123&quot;, newSeating);</span>
+			
+			
+		
+			//Front Center
+			//ROW 4 Seats 5-10
+<span class="fc" id="L262">			cid++;			</span>
+<span class="fc" id="L263">			newSeating = new Seating(row);</span>
+<span class="fc" id="L264">			newSeating.addSeat(5, Integer.toString(cid));</span>
+			
+<span class="fc" id="L266">			cid++; </span>
+<span class="fc" id="L267">			newSeating.addSeat(6, Integer.toString(cid));</span>
+			
+<span class="fc" id="L269">			cid++;</span>
+<span class="fc" id="L270">			newSeating.addSeat(7, Integer.toString(cid));</span>
+			
+<span class="fc" id="L272">			cid++;</span>
+<span class="fc" id="L273">			newSeating.addSeat(8, Integer.toString(cid));</span>
+			
+<span class="fc" id="L275">			cid++;</span>
+<span class="fc" id="L276">			newSeating.addSeat(9, Integer.toString(cid));</span>
+			
+<span class="fc" id="L278">			cid++;</span>
+<span class="fc" id="L279">			newSeating.addSeat(10, Integer.toString(cid));</span>
+<span class="fc" id="L280">			addSeatingToSection(&quot;124&quot;, newSeating);</span>
+			
+			//Front Left
+			//ROW 4 Seats 11-14
+<span class="fc" id="L284">			cid++;</span>
+<span class="fc" id="L285">			newSeating = new Seating(row);</span>
+<span class="fc" id="L286">			newSeating.addSeat(11, Integer.toString(cid));</span>
+			
+<span class="fc" id="L288">			cid++; </span>
+<span class="fc" id="L289">			newSeating.addSeat(12, Integer.toString(cid));</span>
+			
+<span class="fc" id="L291">			cid++;</span>
+<span class="fc" id="L292">			newSeating.addSeat(13, Integer.toString(cid));</span>
+			
+<span class="fc" id="L294">			cid++;</span>
+<span class="fc" id="L295">			newSeating.addSeat(14, Integer.toString(cid));</span>
+<span class="fc" id="L296">			addSeatingToSection(&quot;125&quot;, newSeating);</span>
+			
+			//########################ROW 5########################################
+			//Main Right
+			//ROW 5 Seats 1-5
+<span class="fc" id="L301">			createSections(&quot;Main right&quot;, &quot;126&quot;, 0);</span>
+			
+<span class="fc" id="L303">			row=&quot;5&quot;;//row 5</span>
+<span class="fc" id="L304">			cid++;</span>
+<span class="fc" id="L305">			newSeating = new Seating(row);</span>
+<span class="fc" id="L306">			newSeating.addSeat(1, Integer.toString(cid));</span>
+			
+<span class="fc" id="L308">			cid++; </span>
+<span class="fc" id="L309">			newSeating.addSeat(2, Integer.toString(cid));</span>
+			
+<span class="fc" id="L311">			cid++;</span>
+<span class="fc" id="L312">			newSeating.addSeat(3, Integer.toString(cid));</span>
+			
+<span class="fc" id="L314">			cid++;</span>
+<span class="fc" id="L315">			newSeating.addSeat(4, Integer.toString(cid));</span>
+			
+<span class="fc" id="L317">			cid++;</span>
+<span class="fc" id="L318">			newSeating.addSeat(5, Integer.toString(cid));</span>
+<span class="fc" id="L319">			addSeatingToSection(&quot;126&quot;, newSeating);</span>
+			
+			
+			//Main Center
+			//ROW 5 Seats 6-11
+<span class="fc" id="L324">			createSections(&quot;Main center&quot;, &quot;127&quot;, 0);</span>
+			
+<span class="fc" id="L326">			cid++;</span>
+<span class="fc" id="L327">			newSeating = new Seating(row);</span>
+<span class="fc" id="L328">			newSeating.addSeat(6, Integer.toString(cid));</span>
+			
+<span class="fc" id="L330">			cid++; </span>
+<span class="fc" id="L331">			newSeating.addSeat(7, Integer.toString(cid));</span>
+			
+<span class="fc" id="L333">			cid++;</span>
+<span class="fc" id="L334">			newSeating.addSeat(8, Integer.toString(cid));</span>
+			
+<span class="fc" id="L336">			cid++;</span>
+<span class="fc" id="L337">			newSeating.addSeat(9, Integer.toString(cid));</span>
+			
+<span class="fc" id="L339">			cid++;</span>
+<span class="fc" id="L340">			newSeating.addSeat(10, Integer.toString(cid));</span>
+			
+<span class="fc" id="L342">			cid++;</span>
+<span class="fc" id="L343">			newSeating.addSeat(11, Integer.toString(cid));</span>
+<span class="fc" id="L344">			addSeatingToSection(&quot;127&quot;, newSeating);</span>
+	
+			
+			
+			//Main Left
+<span class="fc" id="L349">			createSections(&quot;Main left&quot;, &quot;128&quot;, 0);</span>
+			//ROW 5 Seats 12-16
+			
+<span class="fc" id="L352">			cid++;</span>
+<span class="fc" id="L353">			newSeating = new Seating(row);</span>
+<span class="fc" id="L354">			newSeating.addSeat(12, Integer.toString(cid));</span>
+			
+<span class="fc" id="L356">			cid++; </span>
+<span class="fc" id="L357">			newSeating.addSeat(13, Integer.toString(cid));</span>
+			
+<span class="fc" id="L359">			cid++;</span>
+<span class="fc" id="L360">			newSeating.addSeat(14, Integer.toString(cid));</span>
+			
+<span class="fc" id="L362">			cid++;</span>
+<span class="fc" id="L363">			newSeating.addSeat(15, Integer.toString(cid));</span>
+			
+<span class="fc" id="L365">			cid++;</span>
+<span class="fc" id="L366">			newSeating.addSeat(16, Integer.toString(cid));</span>
+			
+<span class="fc" id="L368">			addSeatingToSection(&quot;128&quot;, newSeating);</span>
+			
+			//########################ROW 6########################################
+			//Main Right
+			//ROW 6 Seats 1-5
+<span class="fc" id="L373">			row=&quot;6&quot;;//row 6</span>
+<span class="fc" id="L374">			cid++;</span>
+<span class="fc" id="L375">			newSeating = new Seating(row);</span>
+<span class="fc" id="L376">			newSeating.addSeat(1, Integer.toString(cid));</span>
+			
+<span class="fc" id="L378">			cid++; </span>
+<span class="fc" id="L379">			newSeating.addSeat(2, Integer.toString(cid));</span>
+			
+<span class="fc" id="L381">			cid++;</span>
+<span class="fc" id="L382">			newSeating.addSeat(3, Integer.toString(cid));</span>
+			
+<span class="fc" id="L384">			cid++;</span>
+<span class="fc" id="L385">			newSeating.addSeat(4, Integer.toString(cid));</span>
+			
+<span class="fc" id="L387">			cid++;</span>
+<span class="fc" id="L388">			newSeating.addSeat(5, Integer.toString(cid));</span>
+			
+<span class="fc" id="L390">			addSeatingToSection(&quot;126&quot;, newSeating);</span>
+			
+			
+			//Main Center
+			//ROW 6 Seats 6-12			
+<span class="fc" id="L395">			cid++;</span>
+<span class="fc" id="L396">			newSeating = new Seating(row);</span>
+<span class="fc" id="L397">			newSeating.addSeat(6, Integer.toString(cid));</span>
+			
+<span class="fc" id="L399">			cid++; </span>
+<span class="fc" id="L400">			newSeating.addSeat(7, Integer.toString(cid));</span>
+			
+<span class="fc" id="L402">			cid++;</span>
+<span class="fc" id="L403">			newSeating.addSeat(8, Integer.toString(cid));</span>
+			
+<span class="fc" id="L405">			cid++;</span>
+<span class="fc" id="L406">			newSeating.addSeat(9, Integer.toString(cid));</span>
+			
+<span class="fc" id="L408">			cid++;</span>
+<span class="fc" id="L409">			newSeating.addSeat(10, Integer.toString(cid));</span>
+			
+<span class="fc" id="L411">			cid++;</span>
+<span class="fc" id="L412">			newSeating.addSeat(11, Integer.toString(cid));</span>
+			
+<span class="fc" id="L414">			cid++;</span>
+<span class="fc" id="L415">			newSeating.addSeat(12, Integer.toString(cid));</span>
+<span class="fc" id="L416">			addSeatingToSection(&quot;127&quot;, newSeating);</span>
+	
+			
+			
+			//Main Left
+			//ROW 6 Seats 13-17
+			
+<span class="fc" id="L423">			cid++;</span>
+<span class="fc" id="L424">			newSeating = new Seating(row);</span>
+<span class="fc" id="L425">			newSeating.addSeat(13, Integer.toString(cid));</span>
+			
+<span class="fc" id="L427">			cid++; </span>
+<span class="fc" id="L428">			newSeating.addSeat(14, Integer.toString(cid));</span>
+			
+<span class="fc" id="L430">			cid++;</span>
+<span class="fc" id="L431">			newSeating.addSeat(15, Integer.toString(cid));</span>
+			
+<span class="fc" id="L433">			cid++;</span>
+<span class="fc" id="L434">			newSeating.addSeat(16, Integer.toString(cid));</span>
+			
+<span class="fc" id="L436">			cid++;</span>
+<span class="fc" id="L437">			newSeating.addSeat(17, Integer.toString(cid));</span>
+<span class="fc" id="L438">			addSeatingToSection(&quot;128&quot;, newSeating);</span>
+			
+			
+			//########################ROW 7########################################
+			//Main Right
+			//ROW 7 Seats 1-5
+<span class="fc" id="L444">			row=&quot;7&quot;;//row 7</span>
+<span class="fc" id="L445">			cid++;</span>
+<span class="fc" id="L446">			newSeating = new Seating(row);</span>
+<span class="fc" id="L447">			newSeating.addSeat(1, Integer.toString(cid));</span>
+			
+<span class="fc" id="L449">			cid++; </span>
+<span class="fc" id="L450">			newSeating.addSeat(2, Integer.toString(cid));</span>
+			
+<span class="fc" id="L452">			cid++;</span>
+<span class="fc" id="L453">			newSeating.addSeat(3, Integer.toString(cid));</span>
+			
+<span class="fc" id="L455">			cid++;</span>
+<span class="fc" id="L456">			newSeating.addSeat(4, Integer.toString(cid));</span>
+			
+<span class="fc" id="L458">			cid++;</span>
+<span class="fc" id="L459">			newSeating.addSeat(5, Integer.toString(cid));</span>
+<span class="fc" id="L460">			addSeatingToSection(&quot;126&quot;, newSeating);</span>
+			
+			
+			//Main Center
+			//ROW 7 Seats 6-13			
+<span class="fc" id="L465">			cid++;</span>
+<span class="fc" id="L466">			newSeating = new Seating(row);</span>
+<span class="fc" id="L467">			newSeating.addSeat(6, Integer.toString(cid));</span>
+			
+<span class="fc" id="L469">			cid++; </span>
+<span class="fc" id="L470">			newSeating.addSeat(7, Integer.toString(cid));</span>
+			
+<span class="fc" id="L472">			cid++;</span>
+<span class="fc" id="L473">			newSeating.addSeat(8, Integer.toString(cid));</span>
+			
+<span class="fc" id="L475">			cid++;</span>
+<span class="fc" id="L476">			newSeating.addSeat(9, Integer.toString(cid));</span>
+			
+<span class="fc" id="L478">			cid++;</span>
+<span class="fc" id="L479">			newSeating.addSeat(10, Integer.toString(cid));</span>
+			
+<span class="fc" id="L481">			cid++;</span>
+<span class="fc" id="L482">			newSeating.addSeat(11, Integer.toString(cid));</span>
+			
+<span class="fc" id="L484">			cid++;</span>
+<span class="fc" id="L485">			newSeating.addSeat(12, Integer.toString(cid));</span>
+			
+<span class="fc" id="L487">			cid++;</span>
+<span class="fc" id="L488">			newSeating.addSeat(13, Integer.toString(cid));</span>
+<span class="fc" id="L489">			addSeatingToSection(&quot;127&quot;, newSeating);</span>
+	
+			
+			
+			//Main Left
+			//ROW 7 Seats 14-18
+			
+<span class="fc" id="L496">			cid++;</span>
+<span class="fc" id="L497">			newSeating = new Seating(row);</span>
+<span class="fc" id="L498">			newSeating.addSeat(14, Integer.toString(cid));</span>
+			
+<span class="fc" id="L500">			cid++; </span>
+<span class="fc" id="L501">			newSeating.addSeat(15, Integer.toString(cid));</span>
+			
+<span class="fc" id="L503">			cid++;</span>
+<span class="fc" id="L504">			newSeating.addSeat(16, Integer.toString(cid));</span>
+			
+<span class="fc" id="L506">			cid++;</span>
+<span class="fc" id="L507">			newSeating.addSeat(17, Integer.toString(cid));</span>
+			
+<span class="fc" id="L509">			cid++;</span>
+<span class="fc" id="L510">			newSeating.addSeat(18, Integer.toString(cid));</span>
+<span class="fc" id="L511">			addSeatingToSection(&quot;127&quot;, newSeating);</span>
+<span class="fc" id="L512">			}</span>
+
+		
+
+		
+		}
+		
+		
+
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>ThaliaTixProject (1) (27.11.2017 22:04:06)</div></body></html>

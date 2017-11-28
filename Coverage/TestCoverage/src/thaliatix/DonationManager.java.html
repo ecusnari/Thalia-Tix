@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>DonationManager.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">ThaliaTixProject (1) (27.11.2017 22:04:06)</a> &gt; <a href="../../index.html" class="el_group">ThaliaTixProject</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">thaliatix</a> &gt; <span class="el_source">DonationManager.java</span></div><h1>DonationManager.java</h1><pre class="source lang-java linenums">package thaliatix;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+<span class="fc" id="L8">public class DonationManager implements BoundaryInterfaceDonation{</span>
+	
+<span class="fc" id="L10">	private static List&lt;Donation&gt; subscriptions = new ArrayList&lt;Donation&gt;();</span>
+	
+	public Donation createSubscription(Donation donation) {
+<span class="fc" id="L13">		donation.setDid();</span>
+<span class="fc" id="L14">		this.subscriptions.add(donation);</span>
+<span class="fc" id="L15">		return donation;</span>
+	}
+
+	
+	public Donation getSubscriptionById(String showID, String donationID) {
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">		for(Donation subscription:subscriptions) {</span>
+<span class="pc bpc" id="L21" title="1 of 4 branches missed.">			if(subscription.getWid().equals(showID) &amp;&amp; subscription.getDid().equals(donationID)) {</span>
+<span class="fc" id="L22">				return subscription;</span>
+			}
+		}
+		
+<span class="nc" id="L26">		return null;</span>
+	}
+	
+	public void assignNewDonations(String tid) {
+<span class="fc" id="L30">		Collections.sort(subscriptions, Comparator.comparing(Donation::getDid));</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">		for(Donation subscription:subscriptions) {</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">			if(subscription.getCount() &gt; subscription.getTickets().size()) {</span>
+<span class="fc" id="L33">				Donation newSubs = subscription;</span>
+<span class="fc" id="L34">				newSubs.addTicket(tid);</span>
+<span class="fc" id="L35">				newSubs.setStatus(&quot;assigned&quot;);</span>
+<span class="fc" id="L36">				subscriptions.remove(subscription);</span>
+<span class="fc" id="L37">				subscriptions.add(newSubs);</span>
+<span class="fc" id="L38">				break;</span>
+			}
+		}
+<span class="fc" id="L41">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>ThaliaTixProject (1) (27.11.2017 22:04:06)</div></body></html>
