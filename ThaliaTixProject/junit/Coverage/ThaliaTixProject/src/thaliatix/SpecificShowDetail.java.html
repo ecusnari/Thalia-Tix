@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>SpecificShowDetail.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">ThaliaTixProject (1) (27.11.2017 22:04:06)</a> &gt; <a href="../../index.html" class="el_group">ThaliaTixProject</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">thaliatix</a> &gt; <span class="el_source">SpecificShowDetail.java</span></div><h1>SpecificShowDetail.java</h1><pre class="source lang-java linenums">package thaliatix;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class SpecificShowDetail {
+
+	private String wid;
+	private ShowInfo show_info;
+<span class="fc" id="L10">	private List&lt;SeatingInfo&gt; seating_info= new ArrayList&lt;SeatingInfo&gt;();</span>
+	
+<span class="fc" id="L12">	public SpecificShowDetail() {</span>
+		
+<span class="fc" id="L14">	}</span>
+	
+<span class="fc" id="L16">	public SpecificShowDetail(Show show) {</span>
+<span class="fc" id="L17">		this.wid = show.getID();</span>
+<span class="fc" id="L18">		this.show_info = new ShowInfo(show);</span>
+		
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">		for(Section section : show.getSections()) {</span>
+<span class="nc" id="L21">			seating_info.add(new SeatingInfo(section));</span>
+		}
+<span class="fc" id="L23">	}</span>
+	
+	public boolean isNil() {
+<span class="fc" id="L26">		return false;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>ThaliaTixProject (1) (27.11.2017 22:04:06)</div></body></html>

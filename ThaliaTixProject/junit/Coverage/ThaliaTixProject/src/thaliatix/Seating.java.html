@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Seating.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">ThaliaTixProject (1) (27.11.2017 22:04:06)</a> &gt; <a href="../../index.html" class="el_group">ThaliaTixProject</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">thaliatix</a> &gt; <span class="el_source">Seating.java</span></div><h1>Seating.java</h1><pre class="source lang-java linenums">package thaliatix;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class Seating {
+
+	private String row;
+<span class="fc" id="L10">	private List&lt;Seat&gt; seats = new ArrayList&lt;Seat&gt;();</span>
+	 
+	
+<span class="fc" id="L13">	public Seating(String r) {</span>
+<span class="fc" id="L14">		row = r;</span>
+<span class="fc" id="L15">	}</span>
+	
+	public void addSeat(int seatNum, String cid) {
+<span class="fc" id="L18">		this.seats.add(new Seat(cid, Integer.toString(seatNum)));</span>
+<span class="fc" id="L19">	}</span>
+
+	public void addSeatObject(Seat seat) {
+<span class="nc" id="L22">		this.seats.add(seat);</span>
+<span class="nc" id="L23">	}</span>
+	public String getRow() {
+<span class="fc" id="L25">		return row;</span>
+	}
+
+	public void setRow(String row) {
+<span class="nc" id="L29">		this.row = row;</span>
+<span class="nc" id="L30">	}</span>
+
+	public List&lt;Seat&gt; getSeats() {
+<span class="fc" id="L33">		return seats;</span>
+	}
+
+	public void setSeats(List&lt;Seat&gt; seats) {
+<span class="fc" id="L37">		this.seats = seats;</span>
+<span class="fc" id="L38">	}</span>
+	
+	public List&lt;String&gt; getSeatsStringList(){
+<span class="fc" id="L41">		List&lt;String&gt; seatsStringList = new ArrayList&lt;String&gt;();</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">		for(Seat seat:seats) {</span>
+<span class="fc" id="L43">			seatsStringList.add(seat.getSeat());</span>
+		}
+<span class="fc" id="L45">		return seatsStringList;</span>
+	}
+	
+	public Seat getSeatByID(String cid) {
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">		for(Seat seat:seats) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">			if(seat.matchesSeatID(cid)) {</span>
+<span class="fc" id="L51">				return seat;</span>
+			}
+		}
+<span class="nc" id="L54">		return new SeatNull();</span>
+	}
+	
+	public boolean ContainsSeat(String cid) {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">		for(Seat seat:this.seats) {</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">			if(seat.matchesSeatID(cid)) {</span>
+<span class="fc" id="L60">				return true;</span>
+			}	
+		}
+<span class="fc" id="L63">		return false;</span>
+	}
+
+	private String SeatsToString() {
+<span class="fc" id="L67">		String result = &quot;&quot;;</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">		for(Seat seat:seats) {</span>
+<span class="fc" id="L69">			result = result.concat(&quot;cid: &quot; + seat.getCid() + &quot;, seat&quot; + seat.getSeat());</span>
+		}
+<span class="fc" id="L71">		return result;</span>
+	}
+	
+	@Override
+	public String toString() {
+<span class="fc" id="L76">		return &quot;Seating [row=&quot; + row + &quot;, seats=&quot;+ SeatsToString();</span>
+	}
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>ThaliaTixProject (1) (27.11.2017 22:04:06)</div></body></html>

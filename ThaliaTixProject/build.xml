@@ -3,12 +3,20 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. --><project basedir="." default="build" name="ThaliaTixProject">
+              as the first entry and export the buildfile again. -->
+	<project basedir="." default="build" name="ThaliaTixProject" xmlns:jacoco="antlib:org.jacoco.ant">
     <property environment="env"/>
     <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
     <property name="source" value="1.8"/>
+              	
+  	<property name="src.dir" location="./src/thaliatix" />
+	<property name="result.dir" location="./report" />
+	<property name="result.classes.dir" location="${result.dir}/classes" />
+	<property name="result.report.dir" location="${result.dir}/site/jacoco" />
+	<property name="result.exec.file" location="${result.dir}/jacoco.exec" />
+              	
     <path id="Web App Libraries.libraryclasspath">
         <pathelement location="WebContent/WEB-INF/lib/gson-2.6.2.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/jacocoant.jar"/>
@@ -17,9 +25,6 @@
         <pathelement location="WebContent/WEB-INF/lib/junit.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/org.apiguardian_1.0.0.v20170910-2246.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/org.hamcrest.core_1.3.0.v201303031735.jar"/>
-        <pathelement location="WebContent/WEB-INF/lib/org.jacoco.agent_0.7.9.v20170208-1730.jar"/>
-        <pathelement location="WebContent/WEB-INF/lib/org.jacoco.core_0.7.9.v20170208-1730.jar"/>
-        <pathelement location="WebContent/WEB-INF/lib/org.jacoco.report_0.7.9.v20170208-1730.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/org.junit.jupiter.api_5.0.0.v20170910-2246.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/org.junit.jupiter.engine_5.0.0.v20170910-2246.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/org.junit.jupiter.migrationsupport_5.0.0.v20170910-2246.jar"/>
@@ -58,6 +63,11 @@
         <pathelement location="WebContent/WEB-INF/lib/org.junit.jupiter.api_5.0.0.v20170910-2246.jar"/>
         <path refid="JUnit 5.libraryclasspath"/>
     </path>
+              	
+  	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+  	        <classpath path="WebContent/WEB-INF/lib/jacocoant.jar"/>
+  	</taskdef>
+              	
     <target name="init">
         <mkdir dir="build/classes"/>
         <copy includeemptydirs="false" todir="build/classes">
@@ -69,9 +79,16 @@
     </target>
     <target name="clean">
         <delete dir="build/classes"/>
+    	<delete dir="report/classes"/>
     </target>
     <target depends="clean" name="cleanall"/>
-    <target depends="build-subprojects,build-project" name="build"/>
+    <target depends="build-subprojects,build-project" name="build">
+    	<mkdir dir="${result.classes.dir}" />
+    	<javac srcdir="${src.dir}" destdir="${result.classes.dir}" debug="true" includeantruntime="false">
+    		<src path="src/thaliatix"/>	
+    		<classpath refid="ThaliaTixProject.classpath"/>
+    	</javac>
+    </target>
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
@@ -81,7 +98,7 @@
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target name="src">
+    <target name="thaliatix">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
@@ -89,6 +106,42 @@
             <classpath refid="ThaliaTixProject.classpath"/>
         </junit>
     </target>
+              	
+  	<target name="test" depends="build">
+		<!-- Step 2: Wrap test execution with the JaCoCo coverage task -->
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="thaliatix.TestRunner" fork="true" failonerror="true">
+				<classpath refid="ThaliaTixProject.classpath"/>
+			</java>
+		</jacoco:coverage>
+	</target>
+
+	<target name="report" depends="test">
+			<!-- Step 3: Create coverage report -->
+			<jacoco:report>
+
+				<!-- This task needs the collected execution data and ... -->
+				<executiondata>
+					<file file="${result.exec.file}" />
+				</executiondata>
+
+				<!-- the class files and optional source files ... -->
+				<structure name="JaCoCo Ant Example">
+					<classfiles>
+						<fileset dir="${result.classes.dir}" />
+					</classfiles>
+					<sourcefiles encoding="UTF-8">
+						<fileset dir="${src.dir}" />
+					</sourcefiles>
+				</structure>
+
+				<!-- to produce reports in different formats. -->
+				<html destdir="${result.report.dir}" />
+				<csv destfile="${result.report.dir}/report.csv" />
+				<xml destfile="${result.report.dir}/report.xml" />
+			</jacoco:report>
+		</target>   	
+              	
     <target name="junitreport">
         <junitreport todir="${junit.output.dir}">
             <fileset dir="${junit.output.dir}">
@@ -97,19 +150,19 @@
             <report format="frames" todir="${junit.output.dir}"/>
         </junitreport>
     </target>
-
-    <target name="war" description="Bundles the application as a WAR file" depends="clean, build">
-        <mkdir dir="WebContent/WEB-INF/classes"/>
-            
-        <copy includeemptydirs="false" todir="WebContent/WEB-INF/classes">
-                <fileset dir="build/classes">
-                <include name="**/*.class"/>
-                </fileset>
-        </copy>
-            
-        <war destfile="Thalia.war"
-            basedir="WebContent"
-            needxmlfile="false">
-        </war>
-    </target>
+		
+		<target name="war" description="Bundles the application as a WAR file" depends="clean, build">
+		    <mkdir dir="WebContent/WEB-INF/classes"/>
+		     
+		    <copy includeemptydirs="false" todir="WebContent/WEB-INF/classes">
+		            <fileset dir="build/classes">
+		            <include name="**/*.class"/>
+		            </fileset>
+		    </copy>
+		     
+		    <war destfile="Thalia.war"
+		        basedir="WebContent"
+		        needxmlfile="false">
+		    </war>
+		</target>
 </project>

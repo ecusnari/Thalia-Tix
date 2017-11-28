@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Donation.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">ThaliaTixProject (1) (27.11.2017 22:04:06)</a> &gt; <a href="../../index.html" class="el_group">ThaliaTixProject</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">thaliatix</a> &gt; <span class="el_source">Donation.java</span></div><h1>Donation.java</h1><pre class="source lang-java linenums">package thaliatix;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.annotations.Expose;
+
+public class Donation {
+
+	@Expose private String did;
+	private String wid;
+	private int count;
+	private String status;
+<span class="fc" id="L14">	private List&lt;String&gt; tickets = new ArrayList&lt;String&gt;();</span>
+	private PatronInfo patron_info;
+	
+<span class="fc" id="L17">	public Donation(String showID, int countInt, String status, List&lt;String&gt; ticketsList, PatronInfo newPatron) {</span>
+<span class="fc" id="L18">		this.wid = showID;</span>
+<span class="fc" id="L19">		this.count = countInt;</span>
+<span class="fc" id="L20">		this.status = status;</span>
+<span class="fc" id="L21">		this.tickets.addAll(ticketsList);</span>
+<span class="fc" id="L22">		this.patron_info = newPatron;</span>
+<span class="fc" id="L23">	}</span>
+	
+	public void addTicket(String tid) {
+<span class="fc" id="L26">		this.tickets.add(tid);</span>
+<span class="fc" id="L27">	}</span>
+	public String getDid() {
+<span class="fc" id="L29">		return did;</span>
+	}
+	public void setDid() {
+<span class="fc" id="L32">		this.did = Integer.toString(UniqueDIDGenerator.getUniqueID());</span>
+<span class="fc" id="L33">	}</span>
+	public String getWid() {
+<span class="fc" id="L35">		return wid;</span>
+	}
+	public void setWid(String wid) {
+<span class="nc" id="L38">		this.wid = wid;</span>
+<span class="nc" id="L39">	}</span>
+	public int getCount() {
+<span class="fc" id="L41">		return count;</span>
+	}
+	public void setCount(int count) {
+<span class="nc" id="L44">		this.count = count;</span>
+<span class="nc" id="L45">	}</span>
+	public String getStatus() {
+<span class="nc" id="L47">		return status;</span>
+	}
+	public void setStatus(String status) {
+<span class="fc" id="L50">		this.status = status;</span>
+<span class="fc" id="L51">	}</span>
+	public List&lt;String&gt; getTickets() {
+<span class="fc" id="L53">		return tickets;</span>
+	}
+	public void setTickets(List&lt;String&gt; tickets) {
+<span class="nc" id="L56">		this.tickets = tickets;</span>
+<span class="nc" id="L57">	}</span>
+	public PatronInfo getPatron_info() {
+<span class="nc" id="L59">		return patron_info;</span>
+	}
+	public void setPatron_info(PatronInfo patron_info) {
+<span class="nc" id="L62">		this.patron_info = patron_info;</span>
+<span class="nc" id="L63">	}</span>
+
+	@Override
+	public String toString() {
+<span class="nc" id="L67">		return &quot;Donation [did=&quot; + did + &quot;, wid=&quot; + wid + &quot;, count=&quot; + count + &quot;, status=&quot; + status + &quot;, tickets=&quot;</span>
+<span class="nc" id="L68">				+ tickets + &quot;, patron_info=&quot; + patron_info + &quot;]&quot;;</span>
+	}
+	
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>ThaliaTixProject (1) (27.11.2017 22:04:06)</div></body></html>

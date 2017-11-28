@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Report.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">ThaliaTixProject (1) (27.11.2017 22:04:06)</a> &gt; <a href="../../index.html" class="el_group">ThaliaTixProject</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">thaliatix</a> &gt; <span class="el_source">Report.java</span></div><h1>Report.java</h1><pre class="source lang-java linenums">package thaliatix;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.annotations.Expose;
+
+public class Report {
+
+	@Expose private String mrid;
+	@Expose private String name;
+	private String start_date;
+	private String end_date;
+	private int total_shows;
+	private int total_seats;
+	private String overall_occupancy;
+<span class="fc" id="L17">	private List&lt;Show&gt; shows = new ArrayList&lt;Show&gt;();</span>
+	
+<span class="fc" id="L19">	public Report(String mrid, String name) {</span>
+<span class="fc" id="L20">		this.mrid = mrid;</span>
+<span class="fc" id="L21">		this.name = name;</span>
+<span class="fc" id="L22">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>ThaliaTixProject (1) (27.11.2017 22:04:06)</div></body></html>

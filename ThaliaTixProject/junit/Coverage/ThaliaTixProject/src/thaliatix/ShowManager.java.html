@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>ShowManager.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">ThaliaTixProject (1) (27.11.2017 22:04:06)</a> &gt; <a href="../../index.html" class="el_group">ThaliaTixProject</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">thaliatix</a> &gt; <span class="el_source">ShowManager.java</span></div><h1>ShowManager.java</h1><pre class="source lang-java linenums">package thaliatix;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+
+
+<span class="fc" id="L10">public class ShowManager implements BoundaryInterfaceShow{</span>
+
+<span class="fc" id="L12">	private static List&lt;Show&gt; Shows = new ArrayList&lt;Show&gt;();</span>
+
+
+    public Show createShow(String name, String web, String date, String time) {
+<span class="fc" id="L16">        Show s= new Show(name, web, date, time);</span>
+<span class="fc" id="L17">        Shows.add(s);</span>
+<span class="fc" id="L18">        return(s);</span>
+    }
+
+    public Show findById(String lid) {
+<span class="fc" id="L22">        Iterator&lt;Show&gt; li = Shows.listIterator();</span>
+        
+<span class="pc bpc" id="L24" title="1 of 2 branches missed.">        while(li.hasNext()) {</span>
+        		
+<span class="fc" id="L26">        		Show s = li.next();</span>
+        
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        		if(s.matchesId(lid))</span>
+<span class="fc" id="L29">            		return(s);</span>
+        		
+        		
+        }
+<span class="nc" id="L33">        return(new NullShow());</span>
+    }
+    
+    public List&lt;ShowDetail&gt; getAllShows() {
+<span class="fc" id="L37">        List&lt;ShowDetail&gt; showDetailList = new ArrayList&lt;ShowDetail&gt;();</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">    	for(Show s:Shows) {</span>
+<span class="fc" id="L39">        	showDetailList.add(new ShowDetail(s));</span>
+        }
+<span class="fc" id="L41">    	return(showDetailList);</span>
+    }
+
+
+	public SpecificShowDetail getShowDetail(String lid) {
+		
+<span class="fc" id="L47">		Show showFound = findById(lid);</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">		if(showFound.isNil()) {return new SpecificShowDetailNull();}</span>
+		
+<span class="fc" id="L50">		SpecificShowDetail showDetail = new SpecificShowDetail(showFound);</span>
+		
+<span class="fc" id="L52">		return(showDetail);</span>
+	}
+
+	public void updateShow(String id, Show s) {
+<span class="fc" id="L56">		Show rep = findById(id);</span>
+<span class="fc" id="L57">		Shows.remove(rep);</span>
+<span class="fc" id="L58">		Shows.add(s);</span>
+<span class="fc" id="L59">	}</span>
+	
+	public List&lt;SectionInfo&gt; getShowSections(String wid){
+<span class="nc" id="L62">		Show show = findById(wid);</span>
+<span class="nc" id="L63">		List&lt;SectionInfo&gt; sectionInfo = new ArrayList&lt;SectionInfo&gt;();</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">		for(Section section: show.getSections()) {</span>
+<span class="nc" id="L65">			sectionInfo.add(new SectionInfo(section));</span>
+		}
+<span class="nc" id="L67">		return sectionInfo;</span>
+	}
+	
+	public ShowSectionDetailedInfo getShowSectionDetail(String wid, String sid){
+		
+		
+<span class="fc" id="L73">		Show show = findById(wid);</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">		for(Section section:show.getSections()) {</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">			if(section.matchesId(sid)) {</span>
+<span class="fc" id="L76">				return(new ShowSectionDetailedInfo(show, section));</span>
+			}
+		}		
+		
+<span class="nc" id="L80">		return null;		</span>
+	}
+	
+	public SeatRequest GetRequestedSeats(String wid, String sid, int count, String starting_seat_id) {
+		
+		
+<span class="fc" id="L86">		ShowSectionDetailedInfo seatsQuery =  getShowSectionDetail(wid, sid);</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">		if(seatsQuery == null) {</span>
+<span class="nc" id="L88">			return null;//404 not found</span>
+		}
+		
+<span class="fc" id="L91">		SeatRequest requestResult = new SeatRequest(seatsQuery);</span>
+<span class="fc" id="L92">		List&lt;Seating&gt; listSeatings = seatsQuery.getSeating();</span>
+<span class="fc" id="L93">		Collections.sort(listSeatings, Comparator.comparing(Seating::getRow));</span>
+		
+		String firstSeatIdOfSeaction;
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">		if(starting_seat_id != null) {</span>
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">			if(Integer.parseInt(starting_seat_id) &gt; Integer.parseInt(listSeatings.get(listSeatings.size()-1).getSeats().get(listSeatings.get(listSeatings.size()-1).getSeats().size()-1).getCid())) {</span>
+<span class="nc" id="L98">				return null;//invalid start cid for the given section--&gt;404 error</span>
+			}else {
+<span class="fc" id="L100">				firstSeatIdOfSeaction = starting_seat_id;</span>
+			}
+<span class="fc" id="L102">		}else {</span>
+<span class="nc" id="L103">			firstSeatIdOfSeaction = listSeatings.get(0).getSeats().get(0).getCid();</span>
+<span class="nc" id="L104">			System.out.print(&quot;First seat cid: &quot; + firstSeatIdOfSeaction);</span>
+		}
+		
+		
+<span class="fc" id="L108">		Seating availableContiguousSeats = FindNContiguousSeats(count, listSeatings, firstSeatIdOfSeaction);</span>
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">		if(availableContiguousSeats.getSeats().size()==0) {</span>
+			//Populate object accordingly to empty query result
+<span class="nc" id="L111">			requestResult.setStarting_seat_id(firstSeatIdOfSeaction);</span>
+<span class="nc" id="L112">			requestResult.setStatus(&quot;Error: &quot; + count + &quot; contiguous seats not available&quot;);</span>
+<span class="nc" id="L113">			return requestResult;</span>
+		}else {
+			//Populate object according to all available fields
+<span class="fc" id="L116">			requestResult.setStarting_seat_id(firstSeatIdOfSeaction);</span>
+<span class="fc" id="L117">			requestResult.setStatus(&quot;ok&quot;);</span>
+<span class="fc" id="L118">			requestResult.setTotal_amount(availableContiguousSeats.getSeats().size()*seatsQuery.getPrice());</span>
+<span class="fc" id="L119">			requestResult.addSeating(availableContiguousSeats);</span>
+<span class="fc" id="L120">			return requestResult;</span>
+		}
+		
+		
+	}
+	
+	private Seating FindNContiguousSeats(int count, List&lt;Seating&gt; seactionSeatings, String start_cid){
+<span class="fc" id="L127">		List&lt;Seat&gt; resultListOfSeats = new ArrayList&lt;Seat&gt;();</span>
+		
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">		for(Seating seating:seactionSeatings) {</span>
+<span class="fc" id="L130">			int rowLength = seating.getSeats().size();</span>
+<span class="fc" id="L131">			String firstSeatCID = seating.getSeats().get(0).getCid();</span>
+<span class="fc" id="L132">			String lastSeatCID = seating.getSeats().get(rowLength-1).getCid();</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">			if(count &lt;= rowLength) {</span>
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">				for(Seat seat:seating.getSeats()) {</span>
+<span class="fc" id="L135">					String firstSeatCheckedCID = seat.getCid();</span>
+					
+<span class="fc" id="L137">					int lastSeat = Integer.parseInt(firstSeatCheckedCID)+count - 1;</span>
+<span class="fc" id="L138">					System.out.println(&quot;Last seat int: &quot; + lastSeat);</span>
+					
+<span class="fc" id="L140">					String lastContiguousSeatCID = Integer.toString(lastSeat);</span>
+<span class="fc" id="L141">					System.out.println(&quot;lastContiguousSeatCID: &quot; + lastContiguousSeatCID);</span>
+					
+<span class="fc" id="L143">					System.out.println(&quot;seat status: &quot; + seat.getStatus());</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">					System.out.println(&quot;if last seat is !null &quot; + !seating.getSeatByID(lastContiguousSeatCID).isNill());</span>
+<span class="fc" id="L145">					System.out.println(&quot;last seat available &quot; + seating.getSeatByID(lastContiguousSeatCID).getStatus());</span>
+<span class="fc" id="L146">					System.out.println(&quot;first seat of section&quot; + Integer.parseInt(firstSeatCheckedCID));</span>
+					
+<span class="pc bpc" id="L148" title="3 of 6 branches missed.">					if(seat.getStatus().equals(&quot;available&quot;) &amp;&amp; !seating.getSeatByID(lastContiguousSeatCID).isNill() &amp;&amp; seating.getSeatByID(lastContiguousSeatCID).getStatus().equals(&quot;available&quot;) &amp;&amp; </span>
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">							Integer.parseInt(firstSeatCheckedCID)&gt;=Integer.parseInt(start_cid)) {</span>
+<span class="fc" id="L150">						resultListOfSeats = checkSeatsAvailabilityInBetween(seating, firstSeatCheckedCID, lastContiguousSeatCID);</span>
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">						if(resultListOfSeats.size()!=0) {</span>
+<span class="fc" id="L152">							Seating resultSeating = new Seating(seating.getRow());</span>
+<span class="fc" id="L153">							resultSeating.setSeats(resultListOfSeats);</span>
+<span class="fc" id="L154">							return resultSeating;</span>
+						}
+					}
+				}
+			}
+			
+		}
+<span class="nc" id="L161">		Seating resultEmptySeating = new Seating(&quot;0&quot;);</span>
+<span class="nc" id="L162">		return resultEmptySeating;</span>
+	}
+
+	private List&lt;Seat&gt; checkSeatsAvailabilityInBetween(Seating seating, String firstSeatCheckedCID,
+			String lastContiguousSeatCID) {
+<span class="fc" id="L167">		List&lt;Seat&gt; listAvailableSeats = new ArrayList&lt;Seat&gt;();</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">		for(int i = Integer.parseInt(firstSeatCheckedCID); i&lt;= Integer.parseInt(lastContiguousSeatCID);i++) {</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">			if(seating.getSeatByID(Integer.toString(i)).getStatus().equals(&quot;available&quot;)) {</span>
+<span class="fc" id="L170">				listAvailableSeats.add(seating.getSeatByID(Integer.toString(i)));</span>
+<span class="fc" id="L171">			}else {</span>
+<span class="nc" id="L172">				listAvailableSeats.clear();</span>
+<span class="nc" id="L173">				return listAvailableSeats;</span>
+			}
+		}
+	
+<span class="fc" id="L177">		return listAvailableSeats;</span>
+	}
+	
+	
+	public boolean CheckSeatsAvailability(String showID, String sectionID, List&lt;Seat&gt; seatsList) {
+<span class="nc" id="L182">		Show showToInspect = findById(showID);</span>
+<span class="nc" id="L183">		Section sectionToInspect = showToInspect.getSectionById(sectionID);</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">		for(Seating seating:sectionToInspect.getSeating()) {</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">			if(seating.ContainsSeat(seatsList.get(0).getCid())) {</span>
+<span class="nc" id="L186">				List&lt;Seat&gt; seatsAvailable = checkSeatsAvailabilityInBetween(seating, seatsList.get(0).getCid(), seatsList.get(seatsList.size()-1).getCid());</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">				if(seatsAvailable.size() &gt; 0) {return true;}</span>
+<span class="nc" id="L188">				else {return false;}</span>
+			}
+		}
+		
+<span class="nc" id="L192">		return false;</span>
+	}
+	
+	public void SetTicketStatusToSold(String wid, String sid, List&lt;Seat&gt; seats) {
+<span class="fc" id="L196">		Show showToInspect = findById(wid);</span>
+<span class="fc" id="L197">		Section sectionToInspect = showToInspect.getSectionById(sid);</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">		for(Seating seating:sectionToInspect.getSeating()) {</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">			if(seating.ContainsSeat(seats.get(0).getCid())) {</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">				for(Seat seatSold:seating.getSeats()) {</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">					for(Seat seatToFind:seats) {</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">						if(seatSold.matchesSeatID(seatToFind.getCid())) {seatSold.setStatus(&quot;sold&quot;);}</span>
+					}
+				}
+			}
+		}
+<span class="fc" id="L207">	}</span>
+	
+	public int GetSectionPriceForShow(String wid, String sid) {
+<span class="nc" id="L210">		Show showToInspect = findById(wid);</span>
+<span class="nc" id="L211">		Section sectionToInspect = showToInspect.getSectionById(sid);</span>
+<span class="nc" id="L212">		return sectionToInspect.getPrice();</span>
+	}
+	
+	public Section getSectionInfoForSeat(String wid, String sid, String cid) {
+<span class="nc" id="L216">		System.out.println(&quot;Trying to add seat : &quot; + cid + &quot;to ticket 'Seating'&quot;);</span>
+<span class="nc" id="L217">		Show showToInspect = findById(wid);</span>
+<span class="nc" id="L218">		Section sectionToInspect = showToInspect.getSectionById(sid);</span>
+<span class="nc" id="L219">		Section sectionInfo = new Section(sectionToInspect.getSection_name(), sectionToInspect.getSid(), sectionToInspect.getPrice());</span>
+		
+		Seating seatingReturn;
+<span class="nc bnc" id="L222" title="All 2 branches missed.">		for(Seating seating:sectionToInspect.getSeating()) {</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">			if(seating.ContainsSeat(cid)) {</span>
+<span class="nc" id="L224">				System.out.println(&quot;getSectionInfoForSeat: trying to add the seat&quot;);</span>
+<span class="nc" id="L225">				seatingReturn = new Seating(seating.getRow());</span>
+<span class="nc" id="L226">				System.out.println(&quot;getSectionInfoForSeat: Create SeatingRetunr &quot;+seatingReturn.toString());</span>
+<span class="nc" id="L227">				seatingReturn.addSeatObject(seating.getSeatByID(cid));</span>
+<span class="nc" id="L228">				System.out.println(&quot;getSectionInfoForSeat: Seating added &quot;+seatingReturn.toString());</span>
+<span class="nc" id="L229">				sectionInfo.addSeating(seatingReturn);</span>
+<span class="nc" id="L230">				System.out.println(&quot;getSectionInfoForSeat: Complete sectionInfo &quot;);</span>
+<span class="nc" id="L231">				sectionInfo.toStringOut();</span>
+<span class="nc" id="L232">				return sectionInfo;</span>
+			}
+		}
+		
+<span class="nc" id="L236">		return new NullSection();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>ThaliaTixProject (1) (27.11.2017 22:04:06)</div></body></html>

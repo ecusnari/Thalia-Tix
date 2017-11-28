@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Ticket.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">ThaliaTixProject (1) (27.11.2017 22:04:06)</a> &gt; <a href="../../index.html" class="el_group">ThaliaTixProject</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">thaliatix</a> &gt; <span class="el_source">Ticket.java</span></div><h1>Ticket.java</h1><pre class="source lang-java linenums">package thaliatix;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Ticket {
+	
+	private String tid;
+	private int price;
+	private String status;
+	private String wid;
+	private ShowInfo show_info;
+	private PatronInfo patron_info;
+	private String sid;
+	private String section_name;
+<span class="fc" id="L16">	private List&lt;Seating&gt; seating = new ArrayList&lt;Seating&gt;();</span>
+	
+<span class="fc" id="L18">	public Ticket(String showID, ShowInfo showInfo, PatronInfo patronInfo, Section sectionInfo) {</span>
+<span class="fc" id="L19">		this.price = sectionInfo.getPrice();</span>
+<span class="fc" id="L20">		this.status = &quot;open&quot;;</span>
+<span class="fc" id="L21">		this.wid = showID;</span>
+<span class="fc" id="L22">		this.show_info = showInfo;</span>
+<span class="fc" id="L23">		this.patron_info = patronInfo;</span>
+<span class="fc" id="L24">		this.sid = sectionInfo.getSid();</span>
+<span class="fc" id="L25">		this.section_name = sectionInfo.getSection_name();</span>
+<span class="fc" id="L26">		this.seating.add(sectionInfo.getSeating().get(0));</span>
+<span class="fc" id="L27">	}</span>
+	
+	public String getTid() {
+<span class="fc" id="L30">		return tid;</span>
+	}
+	public void setTid() {
+<span class="fc" id="L33">		this.tid = Integer.toString(UniqueTIDGenerator.getUniqueID());</span>
+<span class="fc" id="L34">	}</span>
+	public int getPrice() {
+<span class="nc" id="L36">		return price;</span>
+	}
+	public void setPrice(int price) {
+<span class="nc" id="L39">		this.price = price;</span>
+<span class="nc" id="L40">	}</span>
+	public String getStatus() {
+<span class="fc" id="L42">		return status;</span>
+	}
+	public void setStatus(String status) {
+<span class="nc" id="L45">		this.status = status;</span>
+<span class="nc" id="L46">	}</span>
+	public String getWid() {
+<span class="nc" id="L48">		return wid;</span>
+	}
+	public void setWid(String wid) {
+<span class="nc" id="L51">		this.wid = wid;</span>
+<span class="nc" id="L52">	}</span>
+	public ShowInfo getShow_info() {
+<span class="nc" id="L54">		return show_info;</span>
+	}
+	public void setShow_info(ShowInfo show_info) {
+<span class="nc" id="L57">		this.show_info = show_info;</span>
+<span class="nc" id="L58">	}</span>
+	public PatronInfo getPatron_info() {
+<span class="nc" id="L60">		return patron_info;</span>
+	}
+	public void setPatron_info(PatronInfo patron_info) {
+<span class="nc" id="L63">		this.patron_info = patron_info;</span>
+<span class="nc" id="L64">	}</span>
+	public String getSid() {
+<span class="nc" id="L66">		return sid;</span>
+	}
+	public void setSid(String sid) {
+<span class="nc" id="L69">		this.sid = sid;</span>
+<span class="nc" id="L70">	}</span>
+	public String getSection_name() {
+<span class="nc" id="L72">		return section_name;</span>
+	}
+	public void setSection_name(String section_name) {
+<span class="nc" id="L75">		this.section_name = section_name;</span>
+<span class="nc" id="L76">	}</span>
+	public List&lt;Seating&gt; getSeating() {
+<span class="nc" id="L78">		return seating;</span>
+	}
+	public void setSeating(List&lt;Seating&gt; seating) {
+<span class="nc" id="L81">		this.seating = seating;</span>
+<span class="nc" id="L82">	}</span>
+	@Override
+	public String toString() {
+<span class="nc" id="L85">		return &quot;Ticket [tid=&quot; + tid + &quot;, price=&quot; + price + &quot;, status=&quot; + status + &quot;, wid=&quot; + wid + &quot;, show_info=&quot;</span>
+<span class="nc" id="L86">				+ show_info + &quot;, patron_info=&quot; + patron_info + &quot;, sid=&quot; + sid + &quot;, section_name=&quot; + section_name</span>
+<span class="nc" id="L87">				+ &quot;, seating=&quot; + seating + &quot;]&quot;;</span>
+	}
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>ThaliaTixProject (1) (27.11.2017 22:04:06)</div></body></html>
