@@ -58,7 +58,7 @@ url: localhost:8080/<"war file name">/....
 
 ## Acknowledgements
 * Professor Virgil Bistriceanu for providing us with all the guidence and API descriptions in his awesome Object Oriented Programming course at Illinois Institute of Technology
-* Uncle Bob (Robert C. Martin) for the amazing Clean Code phylosophy that I feel ashamed for not reading/watching before
+* Uncle Bob (Robert C. Martin) for the amazing Clean Code philosophy that I feel ashamed for not reading/watching before
 * O'Reilly Media for the classic series on RESTful API book guides
 
 ## License
