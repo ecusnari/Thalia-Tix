@@ -21,7 +21,7 @@ Table of contents
 
 * OS: Ubuntu 16.04 or after
 * [JRE](#install-jre)
-* [Apache Tomcat 8.5](#install-tomcat8.5)
+* [Apache Tomcat 8.5](#install-tomcat)
 * [Ant](#install-ant)
 
 #### Installation
