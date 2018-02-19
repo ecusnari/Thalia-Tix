@@ -1,4 +1,4 @@
-# Thalia-Tix
+# Thalia Tix Theatre Web Service
 Ticketing RESTful web service software for a hypothetical theatre that provides the API for presenting to a client shows, seats and price options, processing ticket orders, recording ticket donations, and compiling budget reports for the theatre staff. 
 
 Table of contents
@@ -23,49 +23,49 @@ Table of contents
 #### Installation:
 
 ##### Clone the project
-$ sudo add-apt-repository ppa:webupd8team/java
+`sudo add-apt-repository ppa:webupd8team/java
 
-$ sudo apt-get update
+sudo apt-get update`
 
 ##### Install Java 
 
-$ sudo apt-get install oracle-java8-installer
+`sudo apt-get install oracle-java8-installer
 
-$ sudo apt-get install oracle-java8-set-default
+sudo apt-get install oracle-java8-set-default`
 
 ##### Install Tomcat8
-$ cd ~/Downloads
+`cd ~/Downloads
 
-$ wget http://apache.claz.org/tomcat/tomcat-8/v8.5.23/bin/apache-tomcat-8.5.23.zip
+wget http://apache.claz.org/tomcat/tomcat-8/v8.5.23/bin/apache-tomcat-8.5.23.zip
 
-$ unzip apache-tomcat-8.5.23.zip
+unzip apache-tomcat-8.5.23.zip
 
-$ cd apache-tomcat-8.5.23.zip/bin
+cd apache-tomcat-8.5.23.zip/bin
 
-$ chmod 744 *sh
+chmod 744 *sh`
 
 ##### Install Ant
-$ sudo apt-get install ant
+`sudo apt-get install ant`
 
 ## Build and deploy instructions
 
 ##### Generate .war file
-$ git clone https://github.com/ecusnari/Thalia-Tix.git
+`git clone https://github.com/ecusnari/Thalia-Tix.git`
 
 --> enter project directory "Thalia-Tix/ThaliaTixProject"
 
-$ ant build thaliatix war
+`ant build thaliatix war`
 
 #### Deployment
 move the genarated .war file to apache-tomcat-8.5.23.zip/webapps
 
 start server:
 
-$ cd apache-tomcat-8.5.23.zip/bin
+`cd apache-tomcat-8.5.23.zip/bin
 
-$ chmod 744 *sh
+chmod 744 *sh
 
-$ ./startup.sh
+./startup.sh`
 
 ## How to use
 
