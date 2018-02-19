@@ -18,11 +18,11 @@ Table of contents
 ## Getting Started
 
 #### Prerequisites
-###### All prerequisites' installation is explained bellow
 
 * OS: Ubuntu 16.04 or after
-* JRE
-* Ant
+* [JRE](#install-jre)
+* [Apache Tomcat 8.5](#install-tomcat-8.5)
+* [Ant](#install-ant)
 
 #### Installation
 
